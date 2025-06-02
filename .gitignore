@@ -1,0 +1,21 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+plaintext
+# Entorno virtual
+venv/
+.env
+.env/
+
+# Archivos de configuración de usuario
+*.pyc
+__pycache__/
+**/__pycache__/
+
+# Configs del IDE
+.vscode/
+.idea/
+
+# Archivos del sistema
+.DS_Store
+
+
+*.bat
