@@ -2,6 +2,7 @@ from django.db import models
 from .Recipe import Recipe
 from .Ingredient import Ingredient
 
+
 class RecipeIngredient(models.Model):
     """
     Modelo de RecipeIngredient, representa los ingredientes de una receta con su cantidad y unidad.
