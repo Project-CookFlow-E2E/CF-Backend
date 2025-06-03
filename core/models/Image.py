@@ -35,7 +35,7 @@ class Image(models.Model):
         choices=ImageStatus.choices,
         default="uploaded"
     )
-    external_id = models.AutoField()
+    external_id = models.BigIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
