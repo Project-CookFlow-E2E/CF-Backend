@@ -5,8 +5,8 @@ class CustomUserManager(BaseUserManager):
 	"""
 	Gestor personalizado para el modelo CustomUser.
 
-	Contiene métodos para crear usuarios normales y administradores sin usar
-	los campos por defecto del modelo User de Django.
+	Contiene métodos para crear usuarios normales y superusuarios utilizando
+	los mecanismos integrados de Django (is_superuser, is_staff).
 
 	Methods:
 		create_user(username, email, password, **extra_fields):
@@ -43,44 +43,48 @@ class CustomUserManager(BaseUserManager):
 		Args:
 			username (str): Nombre de usuario.
 			email (str): Dirección de correo electrónico.
-			password (str, optional): Contraseña del usuario.
+			password (str, optional): Contraseña del superusuario.
 			extra_fields (dict): Campos adicionales opcionales.
 
 		Returns:
 			CustomUser: El superusuario creado.
 		"""
-		extra_fields.setdefault('is_admin', True)
+		extra_fields.setdefault('is_superuser', True)
+		extra_fields.setdefault('is_staff', True)
+
+		if extra_fields.get('is_superuser') is not True:
+			raise ValueError('El superusuario debe tener is_superuser=True.')
+		if extra_fields.get('is_staff') is not True:
+			raise ValueError('El superusuario debe tener is_staff=True.')
+
 		return self.create_user(username, email, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 	"""
-	Modelo de la tabla users
+	Modelo personalizado de usuario para la tabla 'users'.
 
-	Args:
-		AbstractBaseUser (class): Clase base para definir modelos personalizados de usuario.
-		PermissionsMixin (class): Mezcla para incluir soporte a permisos y grupos.
+	Aprovecha AbstractBaseUser y PermissionsMixin para un control total
+	sobre la autenticación y los permisos.
 
 	Attributes:
-		username (str): Nombre de usuario
-		email (str): Email del usuario
-		name (str): Nombre de pila del usuario
-		surname (str): Primer apellido del usuario
-		second_surname (str): Segundo apellido del usuario
-		is_admin (bool): Determina si es administrador o no el usuario
-		biography (str): Biografía que se muestra en la página de perfil del usuario
-		created_at (DateTimeField): Fecha y hora de creación del registro, se establece automáticamente al crearlo
-		updated_at (DateTimeField): Fecha y hora de la última actualización del registro, se actualiza automáticamente al modificarlo
-
-	Author:
-		Saturnino Méndez
+		username (str): Nombre de usuario.
+		email (str): Email del usuario.
+		name (str): Nombre de pila del usuario.
+		surname (str): Primer apellido del usuario.
+		second_surname (str): Segundo apellido del usuario.
+		biography (str): Biografía mostrada en el perfil del usuario.
+		is_staff (bool): Define si el usuario puede acceder al admin.
+		created_at (DateTimeField): Fecha de creación del registro.
+		updated_at (DateTimeField): Fecha de última actualización del registro.
 	"""
+
 	username = models.CharField(max_length=255, unique=True, null=False)
 	email = models.EmailField(max_length=50, null=False, unique=True)
 	name = models.CharField(max_length=50, null=False)
 	surname = models.CharField(max_length=50, null=False)
 	second_surname = models.CharField(max_length=50, null=False)
-	is_admin = models.BooleanField(default=False, null=False)
 	biography = models.CharField(max_length=100, null=True, blank=True)
+	is_staff = models.BooleanField(default=False)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
