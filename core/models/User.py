@@ -1,44 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
-class CustomUserManager(BaseUserManager):
-    """
-           Crea y guarda un nuevo usuario con los datos proporcionados.
-
-           Args:
-               username (str): Nombre de usuario. Obligatorio.
-               email (str): Correo electrónico. Obligatorio.
-               surname (str): Primer apellido. Obligatorio.
-               second_surname (str): Segundo apellido. Obligatorio.
-               password (str, optional): Contraseña del usuario.
-               **extra_fields: Campos adicionales opcionales.
-
-           Raises:
-               ValueError: Si no se proporciona username o email.
-
-           Returns:
-               CustomUser: El usuario recién creado.
-
-           Author:
-                Saturnino Méndez
-           """
-    def create_user(self, username, email, surname, second_surname, password=None, **extra_fields):
-        if not username:
-            raise ValueError('El nombre de usuario es obligatorio')
-        if not email:
-            raise ValueError('El correo electrónico es obligatorio')
-
-        email = self.normalize_email(email)
-        user = self.model(
-            username=username,
-            email=email,
-            surname=surname,
-            second_surname=second_surname,
-            **extra_fields
-        )
-        user.set_password(password)
-        user.save()
-        return user
 
 class CustomUser(models.Model):
     """
@@ -63,17 +23,13 @@ class CustomUser(models.Model):
         """
     username = models.CharField(max_length=255, unique=True, null=False)
     email = models.EmailField(max_length=50, null=False, unique=True)
+    name = models.CharField(max_length=50, null=False)
     surname = models.CharField(max_length=50, null=False)
     second_surname = models.CharField(max_length=50, null=False)
     is_admin = models.BooleanField(default=False, null=False)
     biography = models.CharField(max_length=100, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    objects = CustomUserManager()
-
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'surname', 'second_surname']
 
     class Meta:
         """
