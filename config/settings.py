@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'api',
-    'core'
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -142,3 +142,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_IMAGE_MODEL = 'core.Image'
 AUTH_RECIPE_MODEL = 'core.Recipe'
+AUTH_USER_MODEL = 'core.CustomUser'
