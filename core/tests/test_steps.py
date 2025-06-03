@@ -46,3 +46,7 @@ def test_create_step_con_recipe():
     assert step.created_at is not None
     assert step.updated_at is not None
     assert step.created_at <= step.updated_at
+    
+def test_created_at_and_updated_at(self):
+    self.assertIsNotNone(self.user.created_at)
+    self.assertIsNotNone(self.user.updated_at)
