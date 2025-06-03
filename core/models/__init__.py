@@ -1,2 +1,2 @@
-from .Image import Imagefrom 
+from .Image import Image
 from .RecipeIngredient import RecipeIngredient
