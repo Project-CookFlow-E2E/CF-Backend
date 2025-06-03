@@ -32,7 +32,7 @@ class Image(models.Model):
     url = models.CharField(max_length=100)
     processing_status = models.CharField(
         max_length=15,
-        choices=ImageType.choices,
+        choices=ImageStatus.choices,
         default="uploaded"
     )
     external_id = models.AutoField()
