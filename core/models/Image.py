@@ -16,14 +16,14 @@ class Image(models.Model):
     {Jose Barreiro}
     """
     class ImageType(models.TextChoices):
-        USER = 'USER', 'User', 'user'
-        RECIPE = 'RECIPE', 'Recipe', 'recipe'
-        STEP = 'STEP', 'Step', 'step'
+        USER = 'USER', 'User'
+        RECIPE = 'RECIPE', 'Recipe'
+        STEP = 'STEP', 'Step'
     class ImageStatus(models.TextChoices):
-        UPLOADED = 'UPLOADED', 'Uploaded', 'uploaded'
-        PROCESSING = 'PROCESSING', 'Processing', 'processing'
-        COMPLETED = 'COMPLETED', 'Completed', 'completed'
-        FAILED = 'FAILED', 'Failed', 'failed'
+        UPLOADED = 'UPLOADED', 'Uploaded'
+        PROCESSING = 'PROCESSING', 'Processing'
+        COMPLETED = 'COMPLETED', 'Completed'
+        FAILED = 'FAILED', 'Failed'
     name = models.CharField(max_length=100)
     type = models.CharField(
         max_length=15,
@@ -32,10 +32,10 @@ class Image(models.Model):
     url = models.CharField(max_length=100)
     processing_status = models.CharField(
         max_length=15,
-        choices=ImageType.choices,
+        choices=ImageStatus.choices,
         default="uploaded"
     )
-    external_id = models.AutoField()
+    external_id = models.BigIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
