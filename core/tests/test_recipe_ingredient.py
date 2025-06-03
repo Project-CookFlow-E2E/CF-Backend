@@ -16,13 +16,12 @@ class RecipeIngredientModelTest(TestCase):
             password='testpass'
         )
 
-        # Crear receta de prueba con todos los campos obligatorios
         self.recipe = Recipe.objects.create(
             name="Tortilla",
             description="Tortilla de patatas",
             duration_minutes=30,
             commensals=2,
-            user=self.user  # Campo obligatorio
+            user_id=self.user  
         )
 
         # Crear ingrediente de prueba
