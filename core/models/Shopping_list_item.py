@@ -26,7 +26,7 @@ class Recipe(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredient_id = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity_needed = models.IntegerField()
-    unit = models.CharField(max_length=50, default='pending')
+    unit = models.CharField(max_length=50)
     is_purchased = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
