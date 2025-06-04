@@ -1,4 +1,5 @@
 from django.db import models
+from measurements.models import UnitType
 
 
 class Unit (models.Model):
@@ -17,7 +18,7 @@ class Unit (models.Model):
     """
 
     name = models.CharField(max_length=15, unique=True)
-    #unit_type = models.ForeignKey(UnitType, on_delete=models.CASCADE)
+    unit_type = models.ForeignKey(UnitType, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
