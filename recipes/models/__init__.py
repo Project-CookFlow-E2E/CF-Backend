@@ -1,3 +1,4 @@
+from .RecipeIngredient import RecipeIngredient
 from .Step import Step
 from .category import Category
 from .ingredient import Ingredient
