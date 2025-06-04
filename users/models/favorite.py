@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-# from .models import Recipe
+from recipes.models import Recipe
 from django.conf import settings
 
 class Favorite(models.Model):
@@ -18,7 +18,7 @@ class Favorite(models.Model):
     """
 
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    # recipe_id = models.ForeignKey('Recipe', on_delete=models.CASCADE)
+    recipe_id = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
