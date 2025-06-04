@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+# from .ingredient import Ingredient
 
-class Recipe(models.Model):
+class Shopping_list_item(models.Model):
 
     """
     Modelo de la tabla shopping_list_items
