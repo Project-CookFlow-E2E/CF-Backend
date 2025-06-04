@@ -1,6 +1,6 @@
 import pytest
 from django.db import IntegrityError
-from core.models.User import CustomUser
+from models.user import CustomUser
 
 @pytest.fixture
 def user():

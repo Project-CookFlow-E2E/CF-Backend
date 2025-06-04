@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
-from recipes.models.Category import Category 
+from recipes.models.category import Category 
 class Recipe(models.Model):
 
     """
