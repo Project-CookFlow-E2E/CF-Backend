@@ -1,2 +1,2 @@
-from .category import category
+from .category import Category
 from .ingredient import Ingredient
