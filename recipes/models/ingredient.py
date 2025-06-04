@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
-
+from recipes.models.category import Category 
 
 
 class Ingredient(models.Model):
@@ -26,6 +26,11 @@ class Ingredient(models.Model):
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    categories = models.ManyToManyField(
+      Category,
+      related_name='ingredients',
+      db_table='categories_ingredients' 
+    )
 
     class Meta:
         """ Meta class Define el nombre de la tabla.
