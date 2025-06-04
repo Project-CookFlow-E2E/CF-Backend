@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from core.models.Recipe import Recipe
+from recipes.models.Recipe import Recipe
 from core.models.Ingredient import Ingredient
 from core.models.RecipeIngredient import RecipeIngredient
 
