@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -20,8 +21,8 @@ class Ingredient(models.Model):
         - [Noemi Casaprima] """
 
     name = models.CharField(max_length=50, unique=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    # unit_type_id = models.ForeignKey(Unit_types, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    unit_type_id = models.ForeignKey(settings.AUTH_UNITTYPE_MODEL, on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

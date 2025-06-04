@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
-from .ingredient import Ingredient
+from recipes.models.ingredient import Ingredient
 
 class ShoppingListItem(models.Model):
 
@@ -22,10 +23,10 @@ class ShoppingListItem(models.Model):
     Author:  
         {Lorena Martínez}
     """
-    
-    
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    ingredient_id = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+
+
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ingredient_id = models.ForeignKey(settings.AUTH_INGREDIENT_MODEL, on_delete=models.CASCADE)
     quantity_needed = models.IntegerField()
     unit = models.CharField(max_length=50)
     is_purchased = models.BooleanField()

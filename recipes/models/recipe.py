@@ -26,8 +26,8 @@ class Recipe(models.Model):
     
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=100, null=True, blank=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    category_id = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    category_id = models.ForeignKey(settings.AUTH_CATEGORY_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     duration_minutes = models.IntegerField()
     commensals = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)

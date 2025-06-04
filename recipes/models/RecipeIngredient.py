@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from recipes.models.recipe import Recipe
 from recipes.models.ingredient import Ingredient
@@ -19,9 +20,9 @@ class RecipeIngredient(models.Model):
     Author:
         {Rafael Fernández}
     """
-       
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="recipe_ingredients")
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name="ingredient_recipes")
+
+    recipe = models.ForeignKey(settings.AUTH_RECIPE_MODEL, on_delete=models.CASCADE, related_name="recipe_ingredients")
+    ingredient = models.ForeignKey(settings.AUTH_INGREDIENT_MODEL, on_delete=models.CASCADE, related_name="ingredient_recipes")
     quantity = models.IntegerField()
     unit = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)

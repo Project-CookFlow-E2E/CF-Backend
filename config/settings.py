@@ -145,6 +145,15 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_IMAGE_MODEL = 'core.Image'
-AUTH_RECIPE_MODEL = 'core.Recipe'
-AUTH_USER_MODEL = 'core.CustomUser'
+AUTH_IMAGE_MODEL = 'media.Image'
+AUTH_RECIPE_MODEL = 'recipes.Recipe'
+AUTH_CATEGORY_MODEL = 'recipes.Category'
+AUTH_INGREDIENT_MODEL = 'recipes.Ingredient'
+AUTH_RECIPEINGREDIENT_MODEL = 'recipes.RecipeIngredient'
+AUTH_STEP_MODEL = 'recipes.Step'
+AUTH_SHOPPINGLISTITEM_MODEL = 'shopping.ShoppingListItem'
+AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_FAVORITE_MODEL = 'recipes.Favorite'
+AUTH_UNIT_MODEL = 'measurements.Unit'
+AUTH_UNITTYPE_MODEL = 'measurements.UnitType'
+
