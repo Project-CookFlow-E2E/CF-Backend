@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 
+def default_user():
+    return 1
+
 class Category(models.Model):
     """Modelo de Category, representa las diferentes categorias.  
 
@@ -17,7 +20,7 @@ class Category(models.Model):
     {Ana Castro}
     """
     name = models.CharField(max_length=50, unique=True)
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=default_user)
     parent_category_id = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
     recipes = models.ManyToManyField('recipe.Recipe', related_name='categories')
     ingredients = models.ManyToManyField('recipe.Ingredient', related_name='categories')
