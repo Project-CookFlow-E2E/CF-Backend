@@ -9,11 +9,12 @@ class Unit (models.Model):
     Args:  
         models (Model): Clase base de Django para modelos.  
     Attributes:  
-        `name (str)`: Nombre de la unidad, debe ser único y tener una longitud máxima de 15 caracteres.  
-        `created_at (DateTimeField)`: Fecha y hora de creación del registro, se establece automáticamente al crear el objeto.  
-        `updated_at (DateTimeField)`: Fecha y hora de la última actualización del registro,
+        -`name (str)`: Nombre de la unidad, debe ser único y tener una longitud máxima de 15 caracteres.  
+        -`created_at (DateTimeField)`: Fecha y hora de creación del registro, se establece automáticamente al crear el objeto.  
+        -`updated_at (DateTimeField)`: Fecha y hora de la última actualización del registro,
         se actualiza automáticamente al modificar el objeto.  
-    `unit_type (ForeignKey)`: Relación con el modelo UnitType, que define el tipo de unidad.
+        -`unit_type (ForeignKey)`: Relación con el modelo UnitType, que define el tipo de unidad.  
+        -`user_id (ForeignKey)`: Relación con el modelo de usuario, que indica quién creó la unidad.
     Author:  
     {Angel Aragón}
     """
@@ -21,7 +22,7 @@ class Unit (models.Model):
     name = models.CharField(max_length=15, unique=True)
     unit_type = models.ForeignKey(settings.AUTH_UNITTYPE_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1)
 
     class Meta:
         
