@@ -164,7 +164,7 @@ class CustomUserAdminUpdateSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password', None)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-        #if password:
-            #instance.set_password(password)
+        # if password:
+        # instance.set_password(password)
         instance.save()
         return instance
