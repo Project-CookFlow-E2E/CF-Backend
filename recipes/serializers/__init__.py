@@ -2,3 +2,4 @@ from .stepSerializer import StepSerializer, StepAdminSerializer
 from .categorySerializer import CategorySerializer, CategoryAdminSerializer
 from .ingredientSerializer import IngredientSerializer, IngredientAdminSerializer
 from .recipeSerializer import RecipeSerializer, RecipeAdminSerializer
+from .recipeIngredientSerializer import RecipeIngredientSerializer, RecipeIngredientAdminSerializer
