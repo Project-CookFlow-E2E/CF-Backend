@@ -1,2 +1,3 @@
 from .categorySerializer import CategorySerializer, CategoryAdminSerializer
+from .ingredientSerializer import IngredientSerializer, IngredientAdminSerializer
 from .recipeSerializer import RecipeSerializer, RecipeAdminSerializer
