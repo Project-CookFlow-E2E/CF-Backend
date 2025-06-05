@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+from argon2.low_level import ARGON2_VERSION
+from django.conf.global_settings import PASSWORD_HASHERS
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -26,7 +28,6 @@ SECRET_KEY = 'django-insecure-se*+7f6m+_anqy-ftqv$xuk^@+#1@n(-i+hziugch+=0oieb43
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -83,7 +84,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -104,7 +104,6 @@ REST_FRAMEWORK = {
     )
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -123,7 +122,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -134,7 +132,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -157,3 +154,48 @@ AUTH_FAVORITE_MODEL = 'recipes.Favorite'
 AUTH_UNIT_MODEL = 'measurements.Unit'
 AUTH_UNITTYPE_MODEL = 'measurements.UnitType'
 
+# Configuration for Django's password hashing algorithms.
+# The first hasher in this list will be used to hash all new passwords.
+# Subsequent hashers are kept to allow verification of passwords
+# hashed with older algorithms, facilitating a gradual migration of
+# existing passwords to Argon2.
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
+
+# Optional configuration for Argon2.
+# You can adjust these values to modify the hashing resistance.
+# Keep in mind that higher values will increase security, but also the time
+# and resources required to hash passwords.
+# Django's default values are typically conservative but secure.
+# For a balance between robust security and performance on varied hardware.
+
+# Values explanation:
+# 'time_cost': Number of iterations. Increased for better brute-force attack resistance.
+# This value may vary depending on CPU power.
+# 'memory_cost': Memory size in KiB (1 MiB). Increased for greater resistance
+# to specialized hardware attacks (ASIC/GPU). Consider 4096 (4 MiB).
+# 'parallelism: Number of CPUs/cores to use in parallel.
+# is common to avoid server overload, while maintaining effectiveness.
+
+ARGON2_DEFAULTS = {
+    'time_cost': 4,
+    'memory_cost': 4096,
+    'parallelism': 2
+}
+
+# --- Absolute Minimum Reference (NOT RECOMMENDED FOR PRODUCTION) ---
+# This section provides a theoretical "absolute minimum" configuration for Argon2
+# parameters for purely illustrative purposes, showing the lowest practical values.
+# Using these minimums in a production environment would significantly compromise
+# password security due to their low computational cost, making brute-force
+# attacks relatively easy and fast. These values are NOT secure.
+#
+# 'time_cost': 1          # Bare minimum iterations. Extremely weak against brute-force.
+# 'memory_cost': 8        # Bare minimum memory (8 KiB). Highly vulnerable to GPU/ASIC attacks.
+# 'parallelism': 1        # Bare minimum parallelism.
+# -------------------------------------------------------------------
