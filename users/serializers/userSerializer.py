@@ -164,7 +164,7 @@ class CustomUserUpdateSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         """
         Valida la fortaleza de la contraseña usando los validadores configurados en Django settings.
-        Este método se ejecuta solo si se proporciona una nueva contraseña.
+        Este metodo se ejecuta solo si se proporciona una nueva contraseña.>
         """
         try:
             validate_password(value)
@@ -204,7 +204,7 @@ class CustomUserAdminUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         """
         Valida la fortaleza de la contraseña usando los validadores configurados en Django settings.
-        Este método se ejecuta solo si se proporciona una nueva contraseña.
+        Este metodo se ejecuta solo si se proporciona una nueva contraseña.
         """
 
         password = validated_data.pop('password', None)
