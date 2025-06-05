@@ -2,8 +2,8 @@ from rest_framework import serializers
 from models.category import Category
 from models.ingredient import Ingredient
 from models.recipe import Recipe
-# from recipes.serializers.recipeSerializer import RecipeSerializer
-# from recipes.serializers.ingredientSerializer import IngredientSerializer
+from recipes.serializers.recipeSerializer import RecipeSerializer
+from recipes.serializers.ingredientSerializer import IngredientSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -28,8 +28,8 @@ class CategorySerializer(serializers.ModelSerializer):
     Author:
         Ana Castro
     """
-    # recipes = RecipeSerializer(many=True, read_only=True)
-    # ingredients = IngredientSerializer(many=True, read_only=True)
+    recipes = RecipeSerializer(many=True, read_only=True)
+    ingredients = IngredientSerializer(many=True, read_only=True)
 
     class Meta:
 
@@ -54,8 +54,8 @@ class CategoryAdminSerializer(serializers.ModelSerializer):
     Author:
         Ana Castro
     """
-    # recipes = RecipeSerializer(many=True, read_only=True)
-    # ingredients = IngredientSerializer(many=True, read_only=True)
+    recipes = RecipeSerializer(many=True, read_only=True)
+    ingredients = IngredientSerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
