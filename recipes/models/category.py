@@ -11,8 +11,7 @@ class Category(models.Model):
         `name(str)`: Nombre de la unidad, debe ser único y tener una longitud máxima de 50 caracteres.  
         `user_id(ForeingKey)`: Relacion con el modelo User, que define el usuario.  
         `parent_category_id(ForeingKey)`: Id de la categoria padre a la que va asociada la categoria en cuestión.  
-        `created_at (DateTimeField)`: Fecha y hora de creación del registro, se establece automáticamente al crear el objeto.  
-        `updated_at (DateTimeField)`: Fecha y hora de la última actualización del registro,\n  
+        `created_at (DateTimeField)`: Fecha y hora de creación del registro, se establece automáticamente al crear el objeto.          
         se actualiza automáticamente al modificar el objeto.    
     Author:  
     {Ana Castro}
@@ -20,8 +19,9 @@ class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     parent_category_id = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    recipes = models.ManyToManyField('recipe.Recipe', related_name='categories')
+    ingredients = models.ManyToManyField('recipe.Ingredient', related_name='categories')
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'categories'
