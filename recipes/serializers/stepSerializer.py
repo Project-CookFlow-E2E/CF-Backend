@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from recipes.models import Step
+from recipes.models import Step, Recipe
 
 class StepSerializer(serializers.ModelSerializer):
     """
@@ -18,14 +18,15 @@ class StepSerializer(serializers.ModelSerializer):
         model (Step): Modelo Step.
         fields (tuple): Campos a incluir en la representación JSON.
         read_only_fields (tuple): Campos que no pueden ser modificados por la API.
-     Author:  
+    Author:  
         {Rafael Fernández}
-    """
 
+    """
+    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
     class Meta:
         model = Step
-        fields = ( 'id','order', 'description','recipe_id')  
-        read_only_fields = ('id', 'recipe_id')
+        fields = ('order', 'description', 'id', 'recipe_id','created_at', 'updated_at')  
+        read_only_fields = ('id', 'recipe_id','created_at', 'updated_at')
 
 class StepAdminSerializer(serializers.ModelSerializer):
     """
@@ -48,10 +49,9 @@ class StepAdminSerializer(serializers.ModelSerializer):
         read_only_fields (tuple): Lista de campos que no pueden ser modificados.
     Author:  
         {Rafael Fernández}
-    """
-
+   """
+    steps = StepSerializer(many=True, read_only=True) 
     class Meta:
         model = Step
         fields = '__all__'
         read_only_fields = ('created_at', 'updated_at', 'id', 'recipe_id')
-
