@@ -5,6 +5,20 @@ from recipes.serializers.recipeSerializer import RecipeSerializer, RecipeAdminSe
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para el modelo Recipe.
+
+    Usuarios autenticados pueden realizar todas las operaciones CRUD.
+    Usuarios NO autenticados solo pueden hacer GET (listar y ver recetas).
+
+    Attributes:
+        queryset (QuerySet): Obtiene todos los objetos Recipe.
+        permission_classes (list): Controla el acceso según autenticación.
+        get_serializer_class (func): Selecciona el serializer según el tipo de usuario.
+
+    Author:
+        {Lorena Martínez}
+    """
     queryset = Recipe.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
 
