@@ -62,34 +62,6 @@ class ImageAdminViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         return filter_and_order_images(super().get_queryset(), self.request.query_params)
 
-class ImageWriteDeleteViewSet(
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet
-):
-    """
-    ViewSet que permite crear, modificar y eliminar imágenes
-    accediendo por `external_id` y `type` en lugar del `id`.
-    Solo accesible para usuarios autenticados.
-    """
-    serializer_class = ImageWriteSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return Image.objects.all()
-
-    def get_object(self):
-        external_id = self.kwargs.get("external_id")
-        image_type = self.kwargs.get("type")
-
-        try:
-            return Image.objects.get(external_id=external_id, type=image_type)
-        except Image.DoesNotExist:
-            raise NotFound("Imagen no encontrada con ese external_id y type.")
-        
-
-
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp'}
 
 def validate_extension(filename):
