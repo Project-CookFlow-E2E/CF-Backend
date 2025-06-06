@@ -1,7 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
-from recipes.models import Recipe
 from django.conf import settings
+
 
 class Favorite(models.Model):
     """Modelo de Favorite, representa las recetas que el usuario guarda en favoritos.  
