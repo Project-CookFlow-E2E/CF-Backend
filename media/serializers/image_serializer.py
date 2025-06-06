@@ -23,7 +23,6 @@ class ImageAdminSerializer(serializers.ModelSerializer):
             'type',
             'type_display',
             'processing_status',
-            'processing_status_display',
             'external_id',
             'created_at',
         ]
