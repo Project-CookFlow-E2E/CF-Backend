@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from models.ingredient import Ingredient
-from models.recipe import RecipeIngredient
-from models.shopping_list import ShoppingListItem
+
+
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -95,7 +95,7 @@ class IngredientAdminSerializer(serializers.ModelSerializer):
         """  
 
 
-    class Meta:
+class Meta:
         model = Ingredient
         fields = '__all__'
         read_only_fields = ['id', 'created_at', 'updated_at'] 
