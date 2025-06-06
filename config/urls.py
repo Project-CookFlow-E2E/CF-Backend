@@ -19,9 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-<<<<<<< HEAD
     path('api/shopping/', include('shopping.urls')),
-=======
-    path('api/', include('measurements.urls')),
->>>>>>> feature/CFG2-85/measurement-view-and-url
+    path('api/measurements/', include('measurements.urls')),
 ]
