@@ -13,6 +13,9 @@ class CustomUserManager(BaseUserManager):
 			Crea y guarda un usuario con los campos dados.
 		create_superuser(username, email, password, **extra_fields):
 			Crea y guarda un superusuario con permisos administrativos.
+
+	Auth:
+		Saturnino Mendez
 	"""
 
 	def create_user(self, username, email, password=None, **extra_fields):

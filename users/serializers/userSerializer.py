@@ -21,6 +21,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
        second_surname: Segundo apellido del usuario.
        biography: Breve descripción o biografía del usuario.
        created_at: Fecha y hora de creación del registro del usuario.
+
+    Auth:
+		Saturnino Mendez
     """
 
     class Meta:
@@ -203,7 +206,7 @@ class CustomUserAdminUpdateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         """
-        Valida la fortaleza de la contraseña usando los validadores configurados en Django settings.
+        Válida la fortaleza de la contraseña usando los validadores configurados en Django settings.
         Este metodo se ejecuta solo si se proporciona una nueva contraseña.
         """
 
