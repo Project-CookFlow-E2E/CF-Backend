@@ -22,7 +22,7 @@ class Category(models.Model):
     """
     name = models.CharField(max_length=50, unique=True)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=default_user)
-    parent_category_id = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)    
+    parent_category_id = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
