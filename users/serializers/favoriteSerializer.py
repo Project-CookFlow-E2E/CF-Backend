@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from users.models.favorite import Favorite
 
+
 class FavoriteSerializer(serializers.ModelSerializer):
     """
     Serializer de Favorite, representa las diferentes categorías asociadas a recetas e ingredientes.
@@ -20,6 +21,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
     Author:
         Ana Castro
     """
+
     class Meta:
         model = Favorite
         fields = ['id', 'user_id', 'recipe_id']
