@@ -21,5 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/shopping/', include('shopping.urls')),
     path('api/measurements/', include('measurements.urls')),
-    path('api/steps/', include('recipes.urls')),  
+    path('api/', include('recipes.urls')),  # Incluye las URLs de la aplicación recipes
 ]
