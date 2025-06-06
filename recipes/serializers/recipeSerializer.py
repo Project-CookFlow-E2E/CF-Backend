@@ -86,6 +86,7 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Category.objects.all()
     )
+    steps = StepSerializer(many=True, read_only=True, source='step_set')
 
     class Meta:
         model = Recipe
