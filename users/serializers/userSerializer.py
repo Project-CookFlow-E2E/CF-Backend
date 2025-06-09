@@ -2,6 +2,7 @@ from rest_framework import serializers
 from ..models.user import CustomUser
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -217,3 +218,22 @@ class CustomUserAdminUpdateSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    Serializer personalizado para la obtención de tokens JWT.
+    Extiende TokenObtainPairSerializer para añadir información adicional
+    del usuario (como is_staff y is_superuser) al payload del token de acceso.
+    """
+    @classmethod
+    def get_token(cls, user):
+        """
+        Sobrescribe el metodo get_token para añadir 'is_staff' y 'is_superuser'.
+        """
+        token = super().get_token(user)
+
+        # Added fields
+        token['is_staff'] = user.is_staff
+        token['is_superuser'] = user.is_superuser
+        return token
