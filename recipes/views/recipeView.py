@@ -27,6 +27,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if user.is_authenticated and user.is_staff:
             return RecipeAdminSerializer
         return RecipeSerializer
+    
+    def perform_create(self, serializer): 
+        serializer.save(user=self.request.user)
 
 
 

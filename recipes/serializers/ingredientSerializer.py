@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from models.ingredient import Ingredient
+from recipes.models.ingredient import Ingredient
 
 
 

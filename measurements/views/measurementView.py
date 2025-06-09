@@ -8,8 +8,8 @@ Author:
 """
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, SAFE_METHODS
-from models.unit import Unit
-from models.unitType import UnitType
+from measurements.models.unit import Unit
+from measurements.models.unitType import UnitType
 from measurements.serializers.unitSerializer import UnitSerializer, UnitAdminSerializer
 from measurements.serializers.unitTypeSerializer import UnitTypeSerializer, UnitTypeAdminSerializer
 

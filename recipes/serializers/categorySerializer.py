@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from models.category import Category
-from models.ingredient import Ingredient
-from models.recipe import Recipe
+from recipes.models.category import Category
+from recipes.models.ingredient import Ingredient
+from recipes.models.recipe import Recipe
 from recipes.serializers.recipeSerializer import RecipeSerializer
 from recipes.serializers.ingredientSerializer import IngredientSerializer
 
