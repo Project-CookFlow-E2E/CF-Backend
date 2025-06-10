@@ -2,6 +2,7 @@ from rest_framework import serializers
 from recipes.models.recipeIngredient import RecipeIngredient
 from recipes.models.recipe import Recipe
 from recipes.models.ingredient import Ingredient
+from measurements.models.unit import Unit #Aquí
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     """
@@ -30,6 +31,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     
     recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all()) 
     ingredient = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all()) 
+    unit = serializers.PrimaryKeyRelatedField(queryset=Unit.objects.all())  #Aquí
 
     class Meta:
         model = RecipeIngredient
@@ -63,6 +65,7 @@ class RecipeIngredientAdminSerializer(serializers.ModelSerializer):
     
     recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())  
     ingredient = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all()) 
+    unit = serializers.PrimaryKeyRelatedField(queryset=Unit.objects.all())  # Aquí también
 
     class Meta:
         model = RecipeIngredient

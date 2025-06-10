@@ -44,12 +44,15 @@ class IngredientSerializer(serializers.ModelSerializer):
             fields = [
                 'id',
                 'name',
-                'description',
-                'quantity',
-                'unit',
-                'is_checked',
-            
+                'user_id',
+                'unit_type_id',
+                'is_approved',
+                'categories',
+                'created_at',
+                'updated_at',
             ]
+
+        
             read_only_fields = ['id']
 
 
