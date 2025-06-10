@@ -2,9 +2,8 @@ from rest_framework import serializers
 from recipes.models.ingredient import Ingredient
 
 
-
 class IngredientSerializer(serializers.ModelSerializer):
-    class Meta:
+    
         """
         Clase Meta del serializer IngredientSerializer.  
 
@@ -40,22 +39,22 @@ class IngredientSerializer(serializers.ModelSerializer):
         Noemi Casaprima    
         """
         
-    class Meta:
-        model = Ingredient
-        fields = [
-            'id',
-            'name',
-            'description',
-            'quantity',
-            'unit',
-            'is_checked',
-           
-        ]
-        read_only_fields = ['id']
+        class Meta:
+            model = Ingredient
+            fields = [
+                'id',
+                'name',
+                'description',
+                'quantity',
+                'unit',
+                'is_checked',
+            
+            ]
+            read_only_fields = ['id']
 
 
 class IngredientAdminSerializer(serializers.ModelSerializer):
-     class Meta:
+     
         """  
         Define la configuración del modelo Ingredient para su uso con usuarios administradores,   
         permitiendo mayor nivel de acceso y edición que en el serializer estándar.  
@@ -94,9 +93,8 @@ class IngredientAdminSerializer(serializers.ModelSerializer):
         Noemi Casaprima      
         """  
 
-
-class Meta:
-        model = Ingredient
-        fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'updated_at'] 
+        class Meta:
+                model = Ingredient
+                fields = '__all__'
+                read_only_fields = ['id', 'created_at', 'updated_at'] 
     

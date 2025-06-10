@@ -3,7 +3,8 @@ from recipes.models.recipe import Recipe
 from recipes.models.category import Category
 from recipes.models.step import Step
 from recipes.serializers.stepSerializer import StepSerializer
-from users.serializers.userSerializer import CustomUserSerializer
+from users.serializers.userSerializer import CustomUserSerializer,CustomUserFrontSerializer
+
 
 class RecipeSerializer(serializers.ModelSerializer):
 
@@ -83,7 +84,7 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
         Lorena Martínez
     """
     
-    user = CustomUserSerializer(read_only=True, source='user_id')
+    user = CustomUserFrontSerializer(read_only=True, source='user_id')
     categories = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Category.objects.all()
     )

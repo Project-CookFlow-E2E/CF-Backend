@@ -239,3 +239,25 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['is_staff'] = user.is_staff
         token['is_superuser'] = user.is_superuser
         return token
+
+
+class CustomUserFrontSerializer(serializers.ModelSerializer):
+    """
+    Serializer del modelo CustomUser para usuarios estándar (solo lectura).
+
+    Este serializer 
+    Campos:
+       id: ID único del usuario.
+       username: Nombre de usuario único para inicio de sesión.
+
+    Auth:
+		Saray Miguel Narganes
+    """
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'id',
+            'username'
+        ]
+        read_only_fields = fields

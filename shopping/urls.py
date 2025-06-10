@@ -7,4 +7,5 @@ router.register(r'items', ShoppingListItemView, basename='shopping-item')
 
 urlpatterns = [
     path('', include(router.urls)),
+    
 ]
