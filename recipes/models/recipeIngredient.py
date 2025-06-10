@@ -21,11 +21,13 @@ class RecipeIngredient(models.Model):
         {Rafael Fernández}
     """
 
+
     recipe = models.ForeignKey(settings.AUTH_RECIPE_MODEL, on_delete=models.CASCADE, related_name="recipe_ingredients")
     ingredient = models.ForeignKey(settings.AUTH_INGREDIENT_MODEL, on_delete=models.CASCADE, related_name="ingredient_recipes")
     quantity = models.IntegerField()
-    unit = models.CharField(max_length=50)
+    unit = models.ForeignKey(settings.AUTH_UNIT_MODEL, on_delete=models.CASCADE, related_name="unit_recipes")
     created_at = models.DateTimeField(auto_now_add=True)
+
 
     class Meta:
         """

@@ -16,7 +16,7 @@ class ShoppingListItem(models.Model):
         `ingredient_id (int)`: ID del ingrediente asociado al ítem, relacionado con el modelo Ingredient  
         `quantity_needed (int)`: Cantidad necesaria del ingrediente  
         `unit (str)`: Unidad de medida para la cantidad del ingrediente (por defecto 'pending')  
-        `is_purchased (bool)`: Indica si el ingrediente ya fue comprado  
+        `is_purchased (bool)`: Indica si el ingrediente ya fue comprado
         `created_at (DateTimeField)`: Fecha y hora de creación del registro  
         `updated_at (DateTimeField)`: Fecha y hora de la última actualización del registro 
         
@@ -28,7 +28,7 @@ class ShoppingListItem(models.Model):
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ingredient_id = models.ForeignKey(settings.AUTH_INGREDIENT_MODEL, on_delete=models.CASCADE)
     quantity_needed = models.IntegerField()
-    unit = models.ForeignKey(settings.AUTH_INGREDIENT_MODEL, on_delete=models.CASCADE) #cambiar el auth user model, en settings mi, AUTH UNIT MODEL
+    unit = models.ForeignKey(settings.AUTH_UNIT_MODEL, on_delete=models.CASCADE)
     is_purchased = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
