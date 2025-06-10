@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -39,12 +40,13 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'api',
-    
+
     'users',
     'recipes',
     'shopping',
     'measurements',
     'media',
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 MIDDLEWARE = [
@@ -81,6 +83,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+SIMPLE_JWT = {
+    # ... tus otras configuraciones de SIMPLE_JWT
+
+    'BLACKLIST_ENABLED': True, # <--- ¡Añade o asegura que esta línea esté en True!
+    'BLACKLIST_AFTER_ROTATION': False, # Si no vas a rotar tokens al refrescar, puedes dejarlo en False.
+                                     # Si habilitas rotación, True es la práctica común.
+                                     # Para un logout simple, False funciona bien.
+
+    # ... otras configuraciones como el tiempo de vida de los tokens
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5), # O el tiempo que tengas configurado
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # O el tiempo que tengas configurado
+}
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -95,12 +110,22 @@ DATABASES = {
     }
 }
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',
+#         'django_filters.rest_framework.DjangoFilterBackend'
+#     )
+# }
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'django_filters.rest_framework.DjangoFilterBackend'
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
     )
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
