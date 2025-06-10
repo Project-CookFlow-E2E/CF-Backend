@@ -37,7 +37,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         Lorena Martínez
 """
 
-    user = CustomUserSerializer(read_only=True, source='user_id')
+    user = CustomUserFrontSerializer(read_only=True, source='user_id')
     categories = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Category.objects.all()
     )
