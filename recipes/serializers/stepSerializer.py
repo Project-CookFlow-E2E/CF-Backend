@@ -26,7 +26,7 @@ class StepSerializer(serializers.ModelSerializer):
     class Meta:
         model = Step
         fields = ('order', 'description', 'id', 'recipe_id','created_at', 'updated_at')  
-        read_only_fields = ('id', 'recipe_id','created_at', 'updated_at')
+        read_only_fields = ('id','created_at', 'updated_at')
 
 class StepAdminSerializer(serializers.ModelSerializer):
     """
@@ -54,4 +54,4 @@ class StepAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Step
         fields = '__all__'
-        read_only_fields = ('created_at', 'updated_at', 'id', 'recipe_id')
+        read_only_fields = ('created_at', 'updated_at', 'id')
