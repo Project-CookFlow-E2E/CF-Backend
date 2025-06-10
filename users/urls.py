@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
+    TokenBlacklistView,
     TokenRefreshView
 )
 from .views.userView import (
@@ -63,5 +64,6 @@ urlpatterns = [
 
     # Routes for get and refresh JWT tokens
     path('token/', TokenObtainPairView.as_view(), name='token_obatin_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('logout/', TokenBlacklistView.as_view(), name='token_blacklist')
 ]

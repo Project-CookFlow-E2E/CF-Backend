@@ -28,7 +28,7 @@ class ShoppingListItem(models.Model):
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ingredient_id = models.ForeignKey(settings.AUTH_INGREDIENT_MODEL, on_delete=models.CASCADE)
     quantity_needed = models.IntegerField()
-    unit = models.CharField(max_length=50)
+    unit = models.ForeignKey(settings.AUTH_INGREDIENT_MODEL, on_delete=models.CASCADE) #cambiar el auth user model, en settings mi, AUTH UNIT MODEL
     is_purchased = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
