@@ -3,6 +3,7 @@ from recipes.models.recipe import Recipe
 from recipes.models.category import Category
 from recipes.models.step import Step
 from recipes.serializers.stepSerializer import StepSerializer
+from users.serializers.userSerializer import CustomUserSerializer
 
 class RecipeSerializer(serializers.ModelSerializer):
 
@@ -35,7 +36,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         Lorena Martínez
 """
 
-    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    user = CustomUserSerializer(read_only=True, source='user_id')
     categories = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Category.objects.all()
     )
@@ -46,7 +47,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'description',
-            'user_id',
+            'user',
             'duration_minutes',
             'commensals',
             'categories', 
@@ -54,7 +55,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             'updated_at'
         ]
 
-        read_only_fields = ['id','user_id', 'updated_at']
+        read_only_fields = ['id','user', 'updated_at']
 
 
 class RecipeAdminSerializer(serializers.ModelSerializer):
@@ -82,7 +83,7 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
         Lorena Martínez
     """
     
-    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    user = CustomUserSerializer(read_only=True, source='user_id')
     categories = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Category.objects.all()
     )
@@ -91,4 +92,4 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = '__all__'
-        read_only_fields = ['id', 'user_id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at']
