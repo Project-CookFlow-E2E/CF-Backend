@@ -4,10 +4,12 @@ from recipes.models.category import Category
 from recipes.models.recipeIngredient import RecipeIngredient
 from recipes.models.step import Step
 from recipes.serializers.stepSerializer import StepSerializer
+from .recipeIngredientSerializer import RecipeIngredientSerializer
 from users.serializers.userSerializer import CustomUserSerializer,CustomUserFrontSerializer
 
 
 class RecipeSerializer(serializers.ModelSerializer):
+    
 
     """
     Serializer para el modelo Recipe utilizado en vistas públicas o de uso general.
@@ -43,19 +45,22 @@ class RecipeSerializer(serializers.ModelSerializer):
         many=True, queryset=Category.objects.all()
     )
     steps = StepSerializer(many=True, read_only=True, source='step_set')
-    class Meta:
+    recipe_ingredients = RecipeIngredientSerializer(many=True, read_only=True)
+    image_url = serializers.CharField(source='main_photo.url', read_only=True)
+class Meta:
         model = Recipe
         fields = [
             'id',
             'name',
             'description',
-            'ingredients',
+            'recipe_ingredients',
             'user',
             'duration_minutes',
             'commensals',
             'categories', 
             'steps',
-            'updated_at'
+            'updated_at',
+            'image_url',
         ]
 
         read_only_fields = ['id','user', 'updated_at']
