@@ -222,3 +222,4 @@ ARGON2_DEFAULTS = {
 # 'memory_cost': 8        # Bare minimum memory (8 KiB). Highly vulnerable to GPU/ASIC attacks.
 # 'parallelism': 1        # Bare minimum parallelism.
 # -------------------------------------------------------------------
+MEDIA_IMG_PATH = BASE_DIR / 'media' / 'img'
