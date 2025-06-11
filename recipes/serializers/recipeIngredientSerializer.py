@@ -34,7 +34,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'recipe', 'ingredient', 'quantity', 'unit')  
-        read_only_fields = ('id', 'recipe', 'ingredient')
+        read_only_fields = ('id')
 
 
 class RecipeIngredientAdminSerializer(serializers.ModelSerializer):
@@ -67,4 +67,4 @@ class RecipeIngredientAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = '__all__'
-        read_only_fields = ('created_at', 'id', 'recipe', 'ingredient')
+        read_only_fields = ('created_at', 'id')

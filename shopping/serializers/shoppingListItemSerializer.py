@@ -43,7 +43,7 @@ class ShoppingListItemSerializer(serializers.ModelSerializer):
             'is_purchased'
         ]
 
-        read_only_fields = ['user_id', 'ingredient_id']
+        read_only_fields = ['user_id']
 
 
 class ShoppingListItemAdminSerializer(serializers.ModelSerializer):
@@ -79,4 +79,4 @@ class ShoppingListItemAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingListItem
         fields = '__all__'
-        read_only_fields = ['id', 'user_id', 'ingredient_id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'user_id', 'created_at', 'updated_at']
