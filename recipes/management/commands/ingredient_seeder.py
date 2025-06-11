@@ -30,7 +30,7 @@ class Command(BaseCommand):
         category, _ = Category.objects.get_or_create(name="General")
 
         # Obtener UnitType, por ejemplo "Cantidad"
-        unit_type = UnitType.objects.get(name="Cantidad")
+        unit_type = UnitType.objects.get(name="unitario")
 
         ingredients_data = [
             {"name": "Papa"},
@@ -38,6 +38,7 @@ class Command(BaseCommand):
             {"name": "Leche"},
             {"name": "Aceite"},
             {"name": "Sal"},
+            {"name": "Cebolla"}
         ]
 
         for ingredient_data in ingredients_data:
