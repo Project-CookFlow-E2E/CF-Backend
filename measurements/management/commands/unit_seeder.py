@@ -117,7 +117,7 @@ class Command(BaseCommand):
             peso_type = UnitType.objects.get(id=1)        # peso
             volumen_type = UnitType.objects.get(id=2)     # volumen  
             unidades_type = UnitType.objects.get(id=3)    # unidades
-            unitario_type = UnitType.objects.get(id=4)    # unitario
+            
         except UnitType.DoesNotExist:
             self.stdout.write(self.style.ERROR("Error: UnitTypes not found. Run unitType_seeder first!"))
             return
@@ -138,7 +138,7 @@ class Command(BaseCommand):
             1: peso_type,
             2: volumen_type,
             3: unidades_type,
-            4: unitario_type
+         
         }
 # Crea o actualiza las unidades
         for unit_data in units_data:

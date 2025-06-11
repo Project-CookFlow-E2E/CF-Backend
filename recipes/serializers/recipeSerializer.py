@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from recipes.models.recipe import Recipe
 from recipes.models.category import Category
+from recipes.models.recipeIngredient import RecipeIngredient
 from recipes.models.step import Step
 from recipes.serializers.stepSerializer import StepSerializer
 from users.serializers.userSerializer import CustomUserSerializer,CustomUserFrontSerializer
@@ -48,6 +49,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'description',
+            'ingredients',
             'user',
             'duration_minutes',
             'commensals',
@@ -89,6 +91,8 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
         many=True, queryset=Category.objects.all()
     )
     steps = StepSerializer(many=True, read_only=True, source='step_set')
+
+    ingredients = RecipeIngredientSerializer(many=True, read_only=True, source='step_set')
 
     class Meta:
         model = Recipe
