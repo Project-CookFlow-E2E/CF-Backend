@@ -26,13 +26,35 @@ class UserRegistrationView(generics.CreateAPIView):
     View para el registro de nuevos usuarios.
     Permite a cualquier usuario crear una nueva cuenta.
     Utiliza CustomUserCreateSerializer para la validación y creación.
+    Args:
+        generics.CreateAPIView: Clase base de DRF para vistas de creación.
 
+    Attributes:
+        queryset (CustomUser.objects.all()): Conjunto de objetos de usuario disponibles para esta vista.
+        serializer_class (CustomUserCreateSerializer): Serializador utilizado para validar y crear nuevos usuarios.
+        permission_classes (list): [AllowAny]: Permite el acceso a cualquier usuario, autenticado o no.
     Auth:
         Saturnino Mendez
+    Modified by:  
+        Ángel Aragón  
+    Modified:
+        - Agregada la lógica para devolver un error 409 (Conflict) si el error es por username o email duplicado.
+        - Para otros errores de validación, responde con un error 400 (Bad Request).
+        - Al crear un usuario exitosamente, devuelve el objeto creado con un código 201 (Created).
     """
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserCreateSerializer
-    permission_classes = [AllowAny]  # Access without auth
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            if 'username' in serializer.errors or 'email' in serializer.errors:
+                return Response(serializer.errors, status=status.HTTP_409_CONFLICT)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class UserLoginView(APIView):
