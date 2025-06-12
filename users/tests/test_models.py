@@ -51,7 +51,7 @@ class TestCustomUserModels:
         """
         with pytest.raises(IntegrityError):
             CustomUser.objects.create_user(
-                username=test_user.username,  # Duplicate username
+                username=test_user.username,   # Duplicate username
                 email='second_dup@example.com',
                 password='password123',
                 name='Second',
@@ -67,7 +67,7 @@ class TestCustomUserModels:
         with pytest.raises(IntegrityError):
             CustomUser.objects.create_user(
                 username='usertwo_dup_email',
-                email=test_user.email,  # Duplicate email
+                email=test_user.email,   # Duplicate email
                 password='password123',
                 name='User',
                 surname='Two',
@@ -95,7 +95,7 @@ class TestCustomUserModels:
                 username='badadmin',
                 email='bad@example.com',
                 password='password123',
-                is_superuser=False,  # Intentionally set to False
+                is_superuser=False,   # Intentionally set to False
                 name='Bad',
                 surname='Admin',
                 second_surname='User'
@@ -110,7 +110,7 @@ class TestCustomUserModels:
                 username='anotherbadadmin',
                 email='anotherbad@example.com',
                 password='password123',
-                is_staff=False,  # Intentionally set to False
+                is_staff=False,   # Intentionally set to False
                 name='Another Bad',
                 surname='Admin',
                 second_surname='User'
@@ -164,7 +164,7 @@ class TestCustomUserModels:
         """
         old_updated_at = test_user.updated_at
         import time
-        time.sleep(0.001)  # Ensure a slight time difference for update
+        time.sleep(0.001)   # Ensure a slight time difference for update
         test_user.name = 'Updated Name'
         test_user.save()
         assert test_user.updated_at > old_updated_at
@@ -207,6 +207,6 @@ class TestFavoriteModels:
         favorite = baker.make(Favorite, user_id=test_user, recipe_id=test_recipe)
         old_updated_at = favorite.updated_at
         import time
-        time.sleep(0.001)  # Ensure a slight time difference for update
-        favorite.save()  # Saving without changing fields still triggers auto_now
+        time.sleep(0.001)   # Ensure a slight time difference for update
+        favorite.save()   # Saving without changing fields still triggers auto_now
         assert favorite.updated_at > old_updated_at

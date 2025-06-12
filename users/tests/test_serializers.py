@@ -62,7 +62,7 @@ class TestFavoriteSerializers:
 
     def test_favorite_serializer_invalid_data_non_existent_relations(self, db):
         """
-        Tests deserialization with non-existent foreign key IDs.
+        Tests deserialization with invalid data (non-existent foreign key IDs).
         """
         data = {
             'user_id': 999,  # Non-existent user ID
@@ -153,13 +153,11 @@ class TestCustomUserSerializers:
         """
         serializer = CustomUserAdminSerializer(instance=test_superuser)
 
-        # CORRECTED: expected_fields now reflects the model without 'first_name' or 'date_joined'
         expected_fields = {
             'id', 'password', 'last_login', 'is_superuser', 'username',
-            'email', 'is_staff', 'is_active', # 'is_active' is kept, 'date_joined' is removed
+            'email', 'is_staff', 'is_active', 
             'name', 'surname', 'second_surname', 'biography',
             'created_at', 'updated_at', 'groups', 'user_permissions'
-            # 'first_name' is removed
         }
 
         assert set(serializer.data.keys()) == expected_fields
@@ -168,8 +166,6 @@ class TestCustomUserSerializers:
         assert serializer.data['is_active'] == test_superuser.is_active
         assert 'password' in serializer.data
         assert 'last_login' in serializer.data
-        # assert 'date_joined' in serializer.data # REMOVED: No longer in model
-        # assert 'first_name' in serializer.data # REMOVED: No longer in model
 
 
     def test_custom_user_admin_serializer_read_only_fields(self, db, test_user):
@@ -191,7 +187,7 @@ class TestCustomUserSerializers:
 
         assert updated_user.id == test_user.id
         assert updated_user.created_at == initial_created_at
-        # The purpose of read_only_fields is that the *serializer input* for these fields is ignored.
+        # The purpose of read_only_fields is that the serializer input for these fields is ignored.
         # The model's auto_now will still update 'updated_at' on save.
         assert updated_user.updated_at != initial_updated_at # Should be different due to auto_now
 
@@ -204,7 +200,6 @@ class TestCustomUserSerializers:
         data = other_user_data.copy()
         data['username'] = 'create_test_user'
         data['email'] = 'create_test@example.com'
-        # data['first_name'] = 'New' # REMOVED: No longer in model
 
         serializer = CustomUserCreateSerializer(data=data)
         assert serializer.is_valid(raise_exception=True)
@@ -237,12 +232,11 @@ class TestCustomUserSerializers:
         """
         data = {
             'username': test_user.username,
-            'email': 'another_dup_user@example.com',
+            'email': 'another_dup@example.com',
             'name': 'Dup',
             'surname': 'User',
             'second_surname': 'Again',
             'password': 'password123',
-            # 'first_name': 'Dup' # REMOVED: No longer in model
         }
         serializer = CustomUserCreateSerializer(data=data)
         assert not serializer.is_valid()
@@ -261,7 +255,6 @@ class TestCustomUserSerializers:
             'surname': 'User',
             'second_surname': 'Again',
             'password': 'password123',
-            # 'first_name': 'Another' # REMOVED: No longer in model
         }
         serializer = CustomUserCreateSerializer(data=data)
         assert not serializer.is_valid()
@@ -280,7 +273,6 @@ class TestCustomUserSerializers:
             'surname': 'Pass',
             'second_surname': 'User',
             'password': 'abc',
-            # 'first_name': 'Weak' # REMOVED: No longer in model
         }
         serializer = CustomUserCreateSerializer(data=data)
         assert not serializer.is_valid()
@@ -324,36 +316,33 @@ class TestCustomUserSerializers:
     def test_custom_user_login_serializer_inactive_user(self, db):
         """
         Tests CustomUserLoginSerializer for an inactive user.
-        Crea un nuevo usuario inactivo para esta prueba.
+        Creates a new inactive user for this test.
         """
-        test_password = 'InactivePassword123!' # Define la contraseña en texto plano
+        test_password = 'InactivePassword123!'
 
-        # Crea el usuario como inactivo desde el principio usando create_user
+        # Create the user as inactive from the start using create_user
         inactive_user = CustomUser.objects.create_user(
             username='inactive_testuser',
             email='inactive@example.com',
             name='Inactive',
             surname='User',
             second_surname='Test',
-            password=test_password, # Pasa la contraseña directamente al método create_user
-            is_active=False # Establece como inactivo directamente durante la creación
+            password=test_password,
+            is_active=False # Set to inactive directly during creation
         )
         
-        # No es necesario inactive_user.set_password(test_password) o CustomUser.objects.filter().update() aquí
-        # porque create_user ya maneja el hashing y save, y is_active se estableció.
-        
-        # Refresh from db es una buena práctica para asegurar que el objeto Python coincide con el estado de la DB
+        # Refresh from db is a good practice to ensure the Python object matches the DB state
         inactive_user.refresh_from_db()
 
-        # Verificación de cordura: Asegúrate de que el usuario está inactivo después de la creación y refresh
-        assert not inactive_user.is_active, "Test setup error: El usuario debería estar inactivo después de la creación."
+        # Sanity check: Ensure the user is inactive after creation and refresh
+        assert not inactive_user.is_active, "Test setup error: The user should be inactive after creation."
 
-        # Verificación de cordura añadida: Obtiene explícitamente el usuario por PK para asegurar el estado de la DB
+        # Sanity check: Explicitly fetch the user by PK to ensure DB state
         verified_inactive_user = CustomUser.objects.get(pk=inactive_user.pk)
-        assert not verified_inactive_user.is_active, "DB state error: El usuario verificado debería estar inactivo."
+        assert not verified_inactive_user.is_active, "DB state error: The verified user should be inactive."
         
-        # Verificación de cordura: Asegura que la contraseña es correcta en el objeto de usuario refrescado
-        assert inactive_user.check_password(test_password), "Test setup error: La verificación de contraseña del usuario inactivo falló."
+        # Sanity check: Ensure the password is correct on the refreshed user object
+        assert inactive_user.check_password(test_password), "Test setup error: Inactive user password verification failed."
 
         data = {'username': inactive_user.username, 'password': test_password}
         serializer = CustomUserLoginSerializer(data=data)
@@ -361,7 +350,7 @@ class TestCustomUserSerializers:
         with pytest.raises(serializers.ValidationError) as excinfo:
             serializer.is_valid(raise_exception=True)
         
-        # Asegúrate de que el mensaje de error específico para usuario inactivo esté presente
+        # Assert that the specific error message for inactive user is present
         assert "Usuario inactivo." in str(excinfo.value)
 
 
@@ -405,7 +394,7 @@ class TestCustomUserSerializers:
         Uses test_user fixture.
         """
         data = {'password': 'weak'}
-        serializer = CustomUserUpdateSerializer(instance=test_user, data=data, partial=True)
+        serializer = CustomUserUpdateSerializer(data=data)
         assert not serializer.is_valid()
         assert 'password' in serializer.errors
         assert any(err for err in serializer.errors['password'] if 'common' in err or 'short' in err)
