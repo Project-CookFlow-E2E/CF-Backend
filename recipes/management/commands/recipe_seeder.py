@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from recipes.models.recipe import Recipe
 from users.models.user import CustomUser
 from recipes.models.category import Category
+from recipes.models.step import Step
 
 
 class Command(BaseCommand):
@@ -37,6 +38,24 @@ class Command(BaseCommand):
                 "duration_minutes": 30,
                 "commensals": 4,
                 "categories": [category],
+                "steps": [
+                    {
+                        "order": 1,
+                        "description": "Pela y corta las papas en rodajas finas.",
+                    },
+                    {
+                        "order": 2,
+                        "description": "Fríelas en aceite hasta que estén blandas.",
+                    },
+                    {
+                        "order": 3,
+                        "description": "Bate los huevos y mezcla con las papas.",
+                    },
+                    {
+                        "order": 4,
+                        "description": "Cuaja la mezcla en una sartén por ambos lados.",
+                    },
+                ],
             },
             {
                 "name": "Milanesa a la napolitana",
@@ -60,6 +79,13 @@ class Command(BaseCommand):
             )
             if created:
                 recipe.categories.set(data["categories"])
+                steps = data.get("steps", [])
+                for step in steps:
+                    Step.objects.create(
+                        order=step["order"],
+                        description=step["description"],
+                        recipe_id=recipe
+                    )
                 self.stdout.write(self.style.SUCCESS(f"Created recipe: {recipe.name}"))
             else:
                 self.stdout.write(
