@@ -1,6 +1,6 @@
 from rest_framework import generics
-from recipes.models.recipe_ingredient import RecipeIngredient
-from recipes.serializers.recipe_ingredient_serializer import RecipeIngredientSerializer
+from recipes.models.recipeIngredient import RecipeIngredient
+from recipes.serializers.recipeIngredientSerializer import RecipeIngredientSerializer
 
 
 class RecipeIngredientListCreateView(generics.ListCreateAPIView):
