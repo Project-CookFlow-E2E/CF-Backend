@@ -2,8 +2,9 @@ from rest_framework import serializers
 from recipes.models.recipeIngredient import RecipeIngredient
 from recipes.models.recipe import Recipe
 from recipes.models.ingredient import Ingredient
-from measurements.models.unit import Unit #Aquí
-
+from measurements.models.unit import Unit 
+from recipes.serializers.ingredientSerializer import IngredientSerializer
+from measurements.serializers.unitSerializer import UnitSerializer
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     """
     Serializer para el modelo RecipeIngredient.
@@ -27,16 +28,18 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     
     Author:
         {Rafael Fernández}
+    Modified:
+        {Ana Castro}
     """
     
     recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all()) 
-    ingredient = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all()) 
-    unit = serializers.PrimaryKeyRelatedField(queryset=Unit.objects.all())  #Aquí
+    ingredient = IngredientSerializer(read_only=True) 
+    unit = unit = UnitSerializer(read_only=True)  
 
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'recipe', 'ingredient', 'quantity', 'unit')  
-        read_only_fields = ('id')
+        read_only_fields = ('id', 'ingredient')
 
 
 class RecipeIngredientAdminSerializer(serializers.ModelSerializer):
@@ -65,7 +68,7 @@ class RecipeIngredientAdminSerializer(serializers.ModelSerializer):
     
     recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())  
     ingredient = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all()) 
-    unit = serializers.PrimaryKeyRelatedField(queryset=Unit.objects.all())  # Aquí también
+    unit = serializers.PrimaryKeyRelatedField(queryset=Unit.objects.all())  
 
     class Meta:
         model = RecipeIngredient
