@@ -55,11 +55,14 @@ class CustomUserManager(BaseUserManager):
         """
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_active', True) 
 
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('El superusuario debe tener is_superuser=True.')
         if extra_fields.get('is_staff') is not True:
             raise ValueError('El superusuario debe tener is_staff=True.')
+        if extra_fields.get('is_active') is not True:
+            raise ValueError('El superusuario debe tener is_active=True.')
 
         return self.create_user(username, email, password, **extra_fields)
 
@@ -79,6 +82,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         second_surname (str): Segundo apellido del usuario.
         biography (str): Biografía mostrada en el perfil del usuario.
         is_staff (bool): Define si el usuario puede acceder al admin.
+        is_active (bool): Define si el usuario está activo.
         created_at (DateTimeField): Fecha de creación del registro.
         updated_at (DateTimeField): Fecha de última actualización del registro.
     """
@@ -90,6 +94,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     second_surname = models.CharField(max_length=50, null=False)
     biography = models.CharField(max_length=100, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -106,3 +111,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             db_table (str): Nombre personalizado de la tabla en la base de datos ('users').
         """
         db_table = 'users'
+
+    def __str__(self):
+        return self.username

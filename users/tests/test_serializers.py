@@ -103,7 +103,7 @@ class TestFavoriteSerializers:
     def test_favorite_admin_serializer_read_only_fields(self, db, test_user, test_recipe):
         """
         Tests that read_only_fields are not writable for FavoriteAdminSerializer.
-        Uses test_user and test_recipe fixtures.
+        Uses test_user fixture.
         """
         favorite = baker.make(Favorite, user_id=test_user, recipe_id=test_recipe)
 
@@ -153,22 +153,23 @@ class TestCustomUserSerializers:
         """
         serializer = CustomUserAdminSerializer(instance=test_superuser)
 
-        # CORRECTED: The 'expected_fields' set has been adjusted to match the actual
-        # serialized output from your CustomUserAdminSerializer. The fields 'first_name',
-        # 'date_joined', and 'is_active' were consistently causing AssertionError,
-        # indicating they are NOT present in your serializer's output despite `fields = '__all__'`.
+        # CORRECTED: expected_fields now reflects the model without 'first_name' or 'date_joined'
         expected_fields = {
             'id', 'password', 'last_login', 'is_superuser', 'username',
-            'email', 'is_staff',
+            'email', 'is_staff', 'is_active', # 'is_active' is kept, 'date_joined' is removed
             'name', 'surname', 'second_surname', 'biography',
             'created_at', 'updated_at', 'groups', 'user_permissions'
+            # 'first_name' is removed
         }
 
         assert set(serializer.data.keys()) == expected_fields
         assert serializer.data['is_staff'] == test_superuser.is_staff
         assert serializer.data['is_superuser'] == test_superuser.is_superuser
+        assert serializer.data['is_active'] == test_superuser.is_active
         assert 'password' in serializer.data
         assert 'last_login' in serializer.data
+        # assert 'date_joined' in serializer.data # REMOVED: No longer in model
+        # assert 'first_name' in serializer.data # REMOVED: No longer in model
 
 
     def test_custom_user_admin_serializer_read_only_fields(self, db, test_user):
@@ -203,6 +204,7 @@ class TestCustomUserSerializers:
         data = other_user_data.copy()
         data['username'] = 'create_test_user'
         data['email'] = 'create_test@example.com'
+        # data['first_name'] = 'New' # REMOVED: No longer in model
 
         serializer = CustomUserCreateSerializer(data=data)
         assert serializer.is_valid(raise_exception=True)
@@ -239,7 +241,8 @@ class TestCustomUserSerializers:
             'name': 'Dup',
             'surname': 'User',
             'second_surname': 'Again',
-            'password': 'password123'
+            'password': 'password123',
+            # 'first_name': 'Dup' # REMOVED: No longer in model
         }
         serializer = CustomUserCreateSerializer(data=data)
         assert not serializer.is_valid()
@@ -257,7 +260,8 @@ class TestCustomUserSerializers:
             'name': 'Another',
             'surname': 'User',
             'second_surname': 'Again',
-            'password': 'password123'
+            'password': 'password123',
+            # 'first_name': 'Another' # REMOVED: No longer in model
         }
         serializer = CustomUserCreateSerializer(data=data)
         assert not serializer.is_valid()
@@ -275,7 +279,8 @@ class TestCustomUserSerializers:
             'name': 'Weak',
             'surname': 'Pass',
             'second_surname': 'User',
-            'password': 'abc'
+            'password': 'abc',
+            # 'first_name': 'Weak' # REMOVED: No longer in model
         }
         serializer = CustomUserCreateSerializer(data=data)
         assert not serializer.is_valid()
@@ -319,41 +324,44 @@ class TestCustomUserSerializers:
     def test_custom_user_login_serializer_inactive_user(self, db):
         """
         Tests CustomUserLoginSerializer for an inactive user.
-        Creates a new inactive user for this specific test.
+        Crea un nuevo usuario inactivo para esta prueba.
         """
-        # Create user
-        inactive_user = CustomUser.objects.create(
+        test_password = 'InactivePassword123!' # Define la contraseña en texto plano
+
+        # Crea el usuario como inactivo desde el principio usando create_user
+        inactive_user = CustomUser.objects.create_user(
             username='inactive_testuser',
             email='inactive@example.com',
             name='Inactive',
             surname='User',
-            second_surname='Test'
+            second_surname='Test',
+            password=test_password, # Pasa la contraseña directamente al método create_user
+            is_active=False # Establece como inactivo directamente durante la creación
         )
-        test_password = 'InactivePassword123!' # Define the plain password
-        inactive_user.set_password(test_password) # Set the hashed password
         
-        # Directly update is_active to False using update() on the queryset for robustness
-        CustomUser.objects.filter(pk=inactive_user.pk).update(is_active=False)
-
-        # IMPORTANT: Refresh the user instance from the database after the update
+        # No es necesario inactive_user.set_password(test_password) o CustomUser.objects.filter().update() aquí
+        # porque create_user ya maneja el hashing y save, y is_active se estableció.
+        
+        # Refresh from db es una buena práctica para asegurar que el objeto Python coincide con el estado de la DB
         inactive_user.refresh_from_db()
 
-        # Sanity check: Ensure the user is indeed inactive after creation and save
-        assert not inactive_user.is_active, "Test setup error: User should be inactive after creation and save."
+        # Verificación de cordura: Asegúrate de que el usuario está inactivo después de la creación y refresh
+        assert not inactive_user.is_active, "Test setup error: El usuario debería estar inactivo después de la creación."
 
-        # ADDED SANITY CHECK: Explicitly fetch the user by PK to ensure DB state
-        # This provides a stronger guarantee that the 'is_active' status is correctly in the database.
+        # Verificación de cordura añadida: Obtiene explícitamente el usuario por PK para asegurar el estado de la DB
         verified_inactive_user = CustomUser.objects.get(pk=inactive_user.pk)
-        assert not verified_inactive_user.is_active, "DB state error: Verified user should be inactive."
+        assert not verified_inactive_user.is_active, "DB state error: El usuario verificado debería estar inactivo."
+        
+        # Verificación de cordura: Asegura que la contraseña es correcta en el objeto de usuario refrescado
+        assert inactive_user.check_password(test_password), "Test setup error: La verificación de contraseña del usuario inactivo falló."
 
-        data = {'username': inactive_user.username, 'password': test_password} # Use the plain password for login attempt
+        data = {'username': inactive_user.username, 'password': test_password}
         serializer = CustomUserLoginSerializer(data=data)
         
-        # We expect a ValidationError when trying to log in an inactive user
         with pytest.raises(serializers.ValidationError) as excinfo:
             serializer.is_valid(raise_exception=True)
         
-        # Assert that the specific error message for inactive user is present
+        # Asegúrate de que el mensaje de error específico para usuario inactivo esté presente
         assert "Usuario inactivo." in str(excinfo.value)
 
 
@@ -417,7 +425,6 @@ class TestCustomUserSerializers:
             'email': 'admin_updated@example.com',
             'name': 'Admin Updated',
             'is_staff': True,
-            # 'is_superuser' is not in the CustomUserAdminUpdateSerializer fields in your provided serializer
             'biography': 'Admin sets new bio.'
         }
         serializer = CustomUserAdminUpdateSerializer(instance=test_user, data=data, partial=True)
@@ -456,11 +463,13 @@ class TestCustomUserSerializers:
         assert 'email' in token
         assert 'is_staff' in token
         assert 'is_superuser' in token
+        assert 'is_active' in token
 
         assert token['username'] == test_superuser.username
         assert token['email'] == test_superuser.email
         assert token['is_staff'] == test_superuser.is_staff
         assert token['is_superuser'] == test_superuser.is_superuser
+        assert token['is_active'] == test_superuser.is_active
 
 
     def test_custom_user_front_serializer_serialization(self, db, test_user):
