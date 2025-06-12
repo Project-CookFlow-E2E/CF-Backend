@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from recipes.models.recipe import Recipe
 from recipes.models.ingredient import Ingredient
+from measurements.models.unit import Unit
 
 
 class RecipeIngredient(models.Model):
@@ -24,7 +25,7 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(settings.AUTH_RECIPE_MODEL, on_delete=models.CASCADE, related_name="recipe_ingredients")
     ingredient = models.ForeignKey(settings.AUTH_INGREDIENT_MODEL, on_delete=models.CASCADE, related_name="ingredient_recipes")
     quantity = models.IntegerField()
-    unit = models.CharField(max_length=50)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
