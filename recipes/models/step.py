@@ -18,7 +18,7 @@ class Step(models.Model):
 
     """
     order = models.IntegerField()
-    recipe_id = models.ForeignKey(settings.AUTH_RECIPE_MODEL, on_delete=models.CASCADE)  
+    recipe = models.ForeignKey(settings.AUTH_RECIPE_MODEL, on_delete=models.CASCADE)  
     description = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
