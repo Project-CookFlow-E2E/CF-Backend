@@ -1,9 +1,8 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import User
 from recipes.models.category import Category 
-class Recipe(models.Model):
 
+class Recipe(models.Model):
     """
     Modelo de la tabla recipes
 
@@ -38,7 +37,6 @@ class Recipe(models.Model):
 	)
 
     class Meta:
-
         """
         Meta clase para definir metadatos del modelo Recipe.
         Esta clase define el nombre de la tabla en la base de datos.  
@@ -48,6 +46,8 @@ class Recipe(models.Model):
         
         db_table = 'recipes'
 
+    def __str__(self):
+        return self.name
     
 
 

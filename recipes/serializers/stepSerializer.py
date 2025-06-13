@@ -25,7 +25,6 @@ class StepSerializer(serializers.ModelSerializer):
     recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
 
     class Meta:
-
         model = Step
         fields = ('order', 'description', 'id', 'recipe', 'created_at', 'updated_at')  
         read_only_fields = ('id', 'created_at', 'updated_at')
@@ -52,7 +51,7 @@ class StepAdminSerializer(serializers.ModelSerializer):
     Author:  
         {Rafael Fernández}
    """
-    steps = StepSerializer(many=True, read_only=True) 
+   
     class Meta:
         model = Step
         fields = '__all__'

@@ -53,7 +53,7 @@ class IngredientSerializer(serializers.ModelSerializer):
             ]
 
         
-            read_only_fields = ['id']
+            read_only_fields = ['id', 'created_at', 'updated_at']
 
 
 class IngredientAdminSerializer(serializers.ModelSerializer):
@@ -92,8 +92,8 @@ class IngredientAdminSerializer(serializers.ModelSerializer):
         endpoints protegidos, donde los administradores necesitan acceso completo a los datos de los ingredientes,  
         incluyendo campos gestionados automáticamente por el sistema.  
 
-     Author:  
-        Noemi Casaprima      
+        Author:  
+            Noemi Casaprima      
         """  
 
         class Meta:

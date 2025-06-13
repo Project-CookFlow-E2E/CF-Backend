@@ -19,7 +19,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         serializers (ModelSerializer): Clase base de DRF que serializa instancias del modelo a datos JSON y viceversa.
 
     Attributes:
-        `user_id (PrimaryKeyRelatedField)`: Campo de solo lectura que representa el ID del usuario creador de la receta.  
+        `user (CustomUserFrontSerializer)`: Campo de solo lectura que representa el usuario creador de la receta (anidado). 
         `categories (PrimaryKeyRelatedField)`: Lista de categorías asociadas a la receta, permite múltiples relaciones (ManyToMany).
 
     Meta:
@@ -31,15 +31,18 @@ class RecipeSerializer(serializers.ModelSerializer):
         `id (int)`: Identificador único de la receta.  
         `name (str)`: Nombre de la receta.  
         `description (str)`: Descripción breve de la receta.  
-        `user_id (int)`: ID del usuario que creó la receta.  
+        `user (obj)`: Objeto del usuario que creó la receta (con id y username).
         `duration_minutes (int)`: Tiempo estimado de preparación.  
         `commensals (int)`: Número de comensales para los que rinde la receta.  
         `categories (list[int])`: IDs de las categorías a las que pertenece la receta.  
+        `steps (list[obj])`: Lista de pasos de la receta.
+        `ingredients (list[obj])`: Lista de ingredientes de la receta.
         `updated_at (datetime)`: Fecha de la última modificación del registro (solo lectura).
+        `image (str)`: URL de la imagen principal de la receta.
 
     Author:
         Lorena Martínez
-"""
+    """
 
     user = CustomUserFrontSerializer(read_only=True, source='user_id')
     categories = serializers.PrimaryKeyRelatedField(
@@ -83,7 +86,7 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
         serializers (ModelSerializer): Clase base de DRF que serializa instancias del modelo a datos JSON y viceversa.
 
     Attributes:
-        `user_id (PrimaryKeyRelatedField)`: Campo de solo lectura que representa el ID del usuario creador.  
+        `user_id (PrimaryKeyRelatedField)`: Campo que representa el ID del usuario creador (para escritura y lectura por admin).
         `categories (PrimaryKeyRelatedField)`: Lista de IDs de categorías asociadas.
 
     Meta:
@@ -111,8 +114,8 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = '__all__'
-        read_only_fields = ['id','user_id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at'] 
 
     def get_image(self, obj):
         image = Image.objects.filter(external_id=obj.id, type='RECIPE').first()
-        return ImageListSerializer(image).data.url if image else None
+        return ImageListSerializer(image).data['url'] if image else None

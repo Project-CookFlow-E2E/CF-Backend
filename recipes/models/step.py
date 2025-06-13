@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from recipes.models.recipe import Recipe
 
 class Step(models.Model):
     """
@@ -18,7 +19,7 @@ class Step(models.Model):
 
     """
     order = models.IntegerField()
-    recipe = models.ForeignKey(settings.AUTH_RECIPE_MODEL, on_delete=models.CASCADE)  
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)  
     description = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -32,3 +33,6 @@ class Step(models.Model):
         """
 
         db_table = 'steps'
+
+    def __str__(self):
+        return f"Step {self.order} for {self.recipe.name}: {self.description[:30]}..."
