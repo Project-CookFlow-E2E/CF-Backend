@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from recipes.models.recipe import Recipe
 from recipes.models.category import Category
+from media.models.image import Image
+from media.serializers.image_serializer import ImageListSerializer
 
 
 class RecipeSerializer(serializers.ModelSerializer):
