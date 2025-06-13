@@ -220,3 +220,9 @@ ARGON2_DEFAULTS = {
 # 'parallelism': 1        # Bare minimum parallelism.
 # -------------------------------------------------------------------
 MEDIA_IMG_PATH = BASE_DIR / 'media' / 'img'
+# Media files configuration
+MEDIA_URL = '/media/'  # URL accesible desde navegador (ej: http://localhost:8000/media/uuid.webp)
+MEDIA_ROOT = BASE_DIR / 'media'  # Carpeta donde se guardan los archivos
+
+# Carpeta específica para imágenes (usada en imageViewSet.py)
+MEDIA_IMG_PATH = MEDIA_ROOT / 'img'
