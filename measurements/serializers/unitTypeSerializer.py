@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from measurements.models import UnitType
-from .unitTypeSerializer import UnitSerializer
+from .unitSerializer import UnitSerializer
 
 class UnitTypeSerializer(serializers.ModelSerializer):
 

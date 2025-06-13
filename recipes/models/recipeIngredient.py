@@ -19,8 +19,7 @@ class RecipeIngredient(models.Model):
         created_at (DateTimeField): Fecha de creación, se establece automáticamente.
     
     Author:
-        {Rafael Fernández}
-    """
+        {Rafael Fernández} """
 
     recipe = models.ForeignKey(settings.AUTH_RECIPE_MODEL, on_delete=models.CASCADE, related_name="recipe_ingredients")
     ingredient = models.ForeignKey(settings.AUTH_INGREDIENT_MODEL, on_delete=models.CASCADE, related_name="ingredient_recipes")

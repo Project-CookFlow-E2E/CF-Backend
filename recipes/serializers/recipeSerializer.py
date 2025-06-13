@@ -1,8 +1,11 @@
 from rest_framework import serializers
 from recipes.models.recipe import Recipe
 from recipes.models.category import Category
-from media.models.image import Image
-from media.serializers.image_serializer import ImageListSerializer
+from recipes.models.recipeIngredient import RecipeIngredient
+from recipes.models.step import Step
+from recipes.serializers.stepSerializer import StepSerializer
+from users.serializers.userSerializer import CustomUserSerializer, CustomUserFrontSerializer
+from .recipeIngredientSerializer import RecipeIngredientSerializer
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -36,25 +39,30 @@ class RecipeSerializer(serializers.ModelSerializer):
         Lorena Martínez
 """
 
-    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    user = CustomUserFrontSerializer(read_only=True, source='user_id')
     categories = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Category.objects.all()
     )
+    ingredients = RecipeIngredientSerializer(many=True, read_only=True, source='recipe_ingredients')
+    steps = StepSerializer(many=True, read_only=True, source='step_set')
 
     class Meta:
+
         model = Recipe
         fields = [
             'id',
             'name',
             'description',
-            'user_id',
+            'ingredients',
+            'user',
             'duration_minutes',
             'commensals',
             'categories', 
+            'steps',
             'updated_at'
         ]
 
-        read_only_fields = ['id','user_id', 'updated_at']
+        read_only_fields = ['id', 'user', 'updated_at']
 
 
 class RecipeAdminSerializer(serializers.ModelSerializer):
@@ -79,15 +87,15 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
         Incluye `created_at` y `updated_at`, además de los campos de receta estándar.
 
     Author:
-        Lorena Martínez
+        {Lorena Martínez}
+    Modified:
+        {Ana Castro}
     """
     
-    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    user = CustomUserFrontSerializer(read_only=True, source='user_id')
     categories = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Category.objects.all()
     )
+    steps = StepSerializer(many=True, read_only=True, source='step_set')
 
-    class Meta:
-        model = Recipe
-        fields = '__all__'
-        read_only_fields = ['id','user_id', 'created_at', 'updated_at']
+    ingredients = RecipeIngredientSerializer(many=True, read_only=True, source='step_set')
