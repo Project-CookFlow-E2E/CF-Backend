@@ -1,8 +1,9 @@
-# users/tests/conftest.py
+# cookflow-backend/conftest.py
 import pytest
 from model_bakery import baker
-from users.models.user import CustomUser
+from users.models.user import CustomUser # Import CustomUser from its absolute path
 
+# These fixtures are now available globally to all tests within the cookflow-backend project.
 
 @pytest.fixture
 def test_user_data():
@@ -37,15 +38,17 @@ def other_user_data():
 def test_user(db, test_user_data):
     """
     Creates and returns a regular CustomUser instance, and stores its plain password.
+    Requires 'db' and 'test_user_data' fixtures.
     """
     user = CustomUser.objects.create_user(**test_user_data)
-    user.plain_password = test_user_data['password'] # Store the plain password
+    user.plain_password = test_user_data['password'] # Store the plain password for login tests
     return user
 
 @pytest.fixture
 def test_superuser(db):
     """
     Creates and returns a superuser CustomUser instance, and stores its plain password.
+    Requires 'db' fixture.
     """
     superuser_data = {
         'username': 'adminuser',
@@ -62,10 +65,10 @@ def test_superuser(db):
 @pytest.fixture
 def test_recipe(db):
     """
-    Creates and returns a dummy Recipe instance for testing Favorite model/serializer,
-    since Favorite has a foreign key to Recipe.
+    Creates and returns a dummy Recipe instance for testing.
     'recipes.Recipe' tells model_bakery to look in the 'recipes' app for the 'Recipe' model.
+    Requires 'db' fixture.
     """
-    recipe = baker.make('recipes.Recipe', name='Test Recipe')
-    return recipe
-
+    # Using the string 'recipes.Recipe' here works because model_bakery
+    # can look up models by their app_label.model_name string.
+    return baker.make('recipes.Recipe', name='Test Recipe')

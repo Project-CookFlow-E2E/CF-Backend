@@ -1,5 +1,5 @@
 from django.test import TestCase
-from models.step import Step
+from recipes.models.step import Step
 
 class StepModelTest(TestCase):
 

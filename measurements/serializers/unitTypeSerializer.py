@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from measurements.models import UnitType
+from measurements.models.unitType import UnitType
 from .unitSerializer import UnitSerializer
+from rest_framework.exceptions import ValidationError
 
 class UnitTypeSerializer(serializers.ModelSerializer):
 
@@ -42,8 +43,11 @@ class UnitTypeAdminSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = UnitType
-        fields = ('name', 'units')
-        read_only_fields = ('name', 'units')
-        extra_kwargs = {
-            'name': {'required': True, 'max_length': 15},
-        }
+        fields = '__all__'
+        read_only = True
+
+    def create(self, validated_data):
+        raise ValidationError("This serializer is read-only; creation is not allowed.")
+
+    def update(self, instance, validated_data):
+        raise ValidationError("This serializer is read-only; updates are not allowed.")

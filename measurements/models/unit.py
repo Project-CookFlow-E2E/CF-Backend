@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.db import models
-from measurements.models import UnitType
-
+from .unitType import UnitType
 
 class Unit (models.Model):
     """Modelo de Unit, representa una unidad de medida o un tipo de unidad.  
@@ -11,8 +10,6 @@ class Unit (models.Model):
     Attributes:  
         -`name (str)`: Nombre de la unidad, debe ser único y tener una longitud máxima de 15 caracteres.  
         -`created_at (DateTimeField)`: Fecha y hora de creación del registro, se establece automáticamente al crear el objeto.  
-        -`updated_at (DateTimeField)`: Fecha y hora de la última actualización del registro,
-        se actualiza automáticamente al modificar el objeto.  
         -`unit_type (ForeignKey)`: Relación con el modelo UnitType, que define el tipo de unidad.  
         -`user_id (ForeignKey)`: Relación con el modelo de usuario, que indica quién creó la unidad.
     Author:  
@@ -20,7 +17,7 @@ class Unit (models.Model):
     """
 
     name = models.CharField(max_length=15, unique=True)
-    unit_type = models.ForeignKey(settings.AUTH_UNITTYPE_MODEL, on_delete=models.CASCADE)
+    unit_type = models.ForeignKey(UnitType, on_delete=models.CASCADE, related_name='units') 
     created_at = models.DateTimeField(auto_now_add=True)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1)
 

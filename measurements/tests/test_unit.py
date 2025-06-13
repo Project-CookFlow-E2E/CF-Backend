@@ -1,5 +1,5 @@
 import pytest
-from measurements.models import Unit
+from measurements.models.unit import Unit
 from django.utils import timezone
 
 @pytest.mark.django_db
