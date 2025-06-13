@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from recipes.models.recipe import Recipe
 from recipes.serializers.recipeSerializer import RecipeSerializer, RecipeAdminSerializer
+from media.services.image_service import update_image_for_instance
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -27,14 +28,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if user.is_authenticated and user.is_staff:
             return RecipeAdminSerializer
         return RecipeSerializer
-    
+
     def perform_create(self, serializer): 
-        serializer.save(user=self.request.user)
+        recipe = serializer.save(user=self.request.user)
 
-
-
-
-
-
-
-
+        image_file = self.request.FILES.get("recipe_image")
+        if image_file:
+            update_image_for_instance(
+                image_file=image_file,
+                user_id=self.request.user.id,
+                external_id=recipe.id,
+                image_type="RECIPE"
+            )

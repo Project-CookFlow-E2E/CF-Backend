@@ -6,6 +6,8 @@ from recipes.models.step import Step
 from recipes.serializers.stepSerializer import StepSerializer
 from users.serializers.userSerializer import CustomUserSerializer, CustomUserFrontSerializer
 from .recipeIngredientSerializer import RecipeIngredientSerializer
+from media.models.image import Image
+from media.serializers.image_serializer import ImageListSerializer
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -45,6 +47,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     )
     ingredients = RecipeIngredientSerializer(many=True, read_only=True, source='recipe_ingredients')
     steps = StepSerializer(many=True, read_only=True, source='step_set')
+    image = serializers.SerializerMethodField()
 
     class Meta:
 
@@ -59,10 +62,15 @@ class RecipeSerializer(serializers.ModelSerializer):
             'commensals',
             'categories', 
             'steps',
-            'updated_at'
+            'updated_at',
+            'image'
         ]
 
         read_only_fields = ['id', 'user', 'updated_at']
+
+    def get_image(self, obj):
+        image = Image.objects.filter(external_id=obj.id, type='RECIPE').first()
+        return ImageListSerializer(image).data if image else None
 
 
 class RecipeAdminSerializer(serializers.ModelSerializer):
@@ -97,5 +105,14 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
         many=True, queryset=Category.objects.all()
     )
     steps = StepSerializer(many=True, read_only=True, source='step_set')
+    ingredients = RecipeIngredientSerializer(many=True, read_only=True, source='recipe_ingredients')
+    image = serializers.SerializerMethodField()
 
-    ingredients = RecipeIngredientSerializer(many=True, read_only=True, source='step_set')
+    class Meta:
+        model = Recipe
+        fields = '__all__'
+        read_only_fields = ['id','user_id', 'created_at', 'updated_at']
+
+    def get_image(self, obj):
+        image = Image.objects.filter(external_id=obj.id, type='RECIPE').first()
+        return ImageListSerializer(image).data.url if image else None
