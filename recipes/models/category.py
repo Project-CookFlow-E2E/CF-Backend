@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.conf import settings
 
 
@@ -33,4 +32,7 @@ class Category(models.Model):
         Esta clase define el nombre de la tabla en la base de datos.  
         Args:  
             db_table (str): Nombre de la tabla en la base de datos, en este caso 'categories'.  
-        """    
+        """  
+
+    def __str__(self):
+        return self.name  

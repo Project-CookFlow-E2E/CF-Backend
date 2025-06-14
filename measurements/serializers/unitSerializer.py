@@ -21,8 +21,8 @@ class UnitSerializer(serializers.ModelSerializer):
         Meta información para el serializador Unit.
         """
         model = Unit
-        fields = ('name', 'unit_type')
-        read_only_fields = ('name', 'unit_type')
+        fields = ('id', 'name', 'unit_type')
+        read_only_fields = ('id', 'name', 'unit_type')
 
 class UnitAdminSerializer(serializers.ModelSerializer):
     """
