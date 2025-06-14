@@ -4,6 +4,7 @@ from recipes.models.ingredient import Ingredient
 from recipes.models.recipe import Recipe
 from recipes.serializers.recipeSerializer import RecipeSerializer
 from recipes.serializers.ingredientSerializer import IngredientSerializer
+from django.db import models
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -30,6 +31,7 @@ class CategorySerializer(serializers.ModelSerializer):
     """
     recipes = RecipeSerializer(many=True, read_only=True)
     ingredients = IngredientSerializer(many=True, read_only=True)
+    parent_category = models.ForeignKey('self', related_name='child_categories', null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
 
