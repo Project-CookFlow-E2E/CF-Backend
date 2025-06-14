@@ -17,6 +17,7 @@ from measurements.models.unitType import UnitType
 
 # --- Test Category Model ---
 @pytest.mark.django_db
+@pytest.mark.unit
 @pytest.mark.models
 @pytest.mark.recipes_app
 class TestCategoryModel:
@@ -57,6 +58,7 @@ class TestCategoryModel:
 
 # --- Test Ingredient Model ---
 @pytest.mark.django_db
+@pytest.mark.unit
 @pytest.mark.models
 @pytest.mark.recipes_app
 class TestIngredientModel:
@@ -134,6 +136,7 @@ class TestIngredientModel:
 
 # --- Test Recipe Model ---
 @pytest.mark.django_db
+@pytest.mark.unit
 @pytest.mark.models
 @pytest.mark.recipes_app
 class TestRecipeModel:
@@ -222,6 +225,7 @@ class TestRecipeModel:
 
 # --- Test RecipeIngredient Model ---
 @pytest.mark.django_db
+@pytest.mark.unit
 @pytest.mark.models
 @pytest.mark.recipes_app
 class TestRecipeIngredientModel:
@@ -283,6 +287,7 @@ class TestRecipeIngredientModel:
 
 # --- Test Step Model ---
 @pytest.mark.django_db
+@pytest.mark.unit
 @pytest.mark.models
 @pytest.mark.recipes_app
 class TestStepModel:

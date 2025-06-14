@@ -26,6 +26,7 @@ from media.serializers.image_serializer import ImageListSerializer
 
 # --- Test Category Serializers ---
 @pytest.mark.django_db
+@pytest.mark.unit
 @pytest.mark.serializers
 @pytest.mark.recipes_app
 class TestCategorySerializers:
@@ -142,13 +143,15 @@ class TestCategorySerializers:
 
 # --- Test Ingredient Serializers ---
 @pytest.mark.django_db
+@pytest.mark.unit
 @pytest.mark.serializers
 @pytest.mark.recipes_app
 class TestIngredientSerializers:
 
     @pytest.fixture
-    def setup_ingredient_serializer_data(self, test_user, test_ingredient, test_unit_type): # Uses global fixtures
-        ingredient = test_ingredient # Use the fixture
+    def setup_ingredient_serializer_data(self, test_user, test_unit_type): # Uses global fixtures
+        # CORRECTED: Explicitly create ingredient with the name expected by tests
+        ingredient = baker.make(Ingredient, name='MyIngredient', user_id=test_user, unit_type_id=test_unit_type, is_approved=False)
         category1 = baker.make(Category, name='CategoryA', user_id=test_user)
         category2 = baker.make(Category, name='CategoryB', user_id=test_user)
         ingredient.categories.add(category1, category2)
@@ -278,6 +281,7 @@ class TestIngredientSerializers:
 
 # --- Test RecipeIngredient Serializers ---
 @pytest.mark.django_db
+@pytest.mark.unit
 @pytest.mark.serializers
 @pytest.mark.recipes_app
 class TestRecipeIngredientSerializers:
@@ -291,7 +295,7 @@ class TestRecipeIngredientSerializers:
             'ingredient': test_ingredient,
             'unit': test_unit,
             'user': test_user,
-            'unit_type': test_unit_type # Pass for creating new ingredients/units if needed
+            'unit_type': test_unit_type # For creating new ingredients if needed
         }
 
     def test_recipe_ingredient_serializer_serialization(self, setup_recipe_ingredient_serializer_data):
@@ -393,13 +397,15 @@ class TestRecipeIngredientSerializers:
 
 # --- Test Recipe Serializers ---
 @pytest.mark.django_db
+@pytest.mark.unit
 @pytest.mark.serializers
 @pytest.mark.recipes_app
 class TestRecipeSerializers:
 
     @pytest.fixture
-    def setup_recipe_serializer_data(self, test_user, test_recipe, test_unit_type): # Uses global fixtures
-        recipe = test_recipe # Use the fixture
+    def setup_recipe_serializer_data(self, test_user, test_unit_type): # Uses global fixtures
+        # CORRECTED: Explicitly create recipe with the name expected by tests
+        recipe = baker.make(Recipe, name='Test Recipe S', user_id=test_user, duration_minutes=30, commensals=2)
         category1 = baker.make(Category, name='CatRS1', user_id=test_user)
         category2 = baker.make(Category, name='CatRS2', user_id=test_user)
         recipe.categories.add(category1, category2)
@@ -574,4 +580,3 @@ class TestRecipeSerializers:
         assert created_recipe.user_id == another_custom_user
         assert created_recipe.categories.count() == 1
         assert category in created_recipe.categories.all()
-
