@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 from recipes.models.ingredient import Ingredient
+from measurements.models.unit import Unit
 
 class ShoppingListItem(models.Model):
 
@@ -24,12 +24,11 @@ class ShoppingListItem(models.Model):
         {Lorena Martínez}
     """
 
-
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    ingredient_id = models.ForeignKey(settings.AUTH_INGREDIENT_MODEL, on_delete=models.CASCADE)
+    ingredient_id = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity_needed = models.IntegerField()
-    unit = models.ForeignKey(settings.AUTH_UNIT_MODEL, on_delete=models.CASCADE)
-    is_purchased = models.BooleanField()
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    is_purchased = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -44,6 +43,14 @@ class ShoppingListItem(models.Model):
         
         db_table = 'shopping_list_items'
 
+    def __str__(self):
+        """
+        Retorna una representación de cadena del ítem de la lista de compras.
+        """
+        ingredient_name = self.ingredient_id.name if self.ingredient_id else 'N/A Ingredient'
+        unit_name = self.unit.name if self.unit else 'N/A Unit'
+        username = self.user_id.username if self.user_id else 'N/A User'
+        return f"{self.quantity_needed} {unit_name} of {ingredient_name} for {username}"
     
 
 

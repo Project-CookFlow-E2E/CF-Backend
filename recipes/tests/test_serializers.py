@@ -9,7 +9,7 @@ from recipes.models.ingredient import Ingredient
 from recipes.models.recipe import Recipe
 from recipes.models.recipeIngredient import RecipeIngredient
 from recipes.models.step import Step
-from users.models.user import CustomUser # Explicit import for CustomUser
+from users.models.user import CustomUser
 from measurements.models.unit import Unit
 from measurements.models.unitType import UnitType
 from media.models.image import Image 
@@ -150,7 +150,7 @@ class TestIngredientSerializers:
 
     @pytest.fixture
     def setup_ingredient_serializer_data(self, test_user, test_unit_type): # Uses global fixtures
-        # CORRECTED: Explicitly create ingredient with the name expected by tests
+        # Explicitly create ingredient with the name expected by tests
         ingredient = baker.make(Ingredient, name='MyIngredient', user_id=test_user, unit_type_id=test_unit_type, is_approved=False)
         category1 = baker.make(Category, name='CategoryA', user_id=test_user)
         category2 = baker.make(Category, name='CategoryB', user_id=test_user)
@@ -172,7 +172,7 @@ class TestIngredientSerializers:
         assert data['user_id'] == setup_ingredient_serializer_data['user'].id
         assert data['unit_type_id'] == setup_ingredient_serializer_data['unit_type'].id
         assert data['is_approved'] is False
-        assert data['categories'] == [cat.id for cat in setup_ingredient_serializer_data['categories']]
+        assert sorted(data['categories']) == sorted([cat.id for cat in setup_ingredient_serializer_data['categories']])
         assert 'created_at' in data
         assert 'updated_at' in data
 
@@ -224,7 +224,7 @@ class TestIngredientSerializers:
         assert data['user_id'] == setup_ingredient_serializer_data['user'].id
         assert data['unit_type_id'] == setup_ingredient_serializer_data['unit_type'].id
         assert data['is_approved'] is False
-        assert data['categories'] == [cat.id for cat in setup_ingredient_serializer_data['categories']]
+        assert sorted(data['categories']) == sorted([cat.id for cat in setup_ingredient_serializer_data['categories']])
         assert 'created_at' in data
         assert 'updated_at' in data
 
@@ -287,15 +287,14 @@ class TestIngredientSerializers:
 class TestRecipeIngredientSerializers:
 
     @pytest.fixture
-    def setup_recipe_ingredient_serializer_data(self, test_user, test_recipe, test_ingredient, test_unit, test_unit_type): # Uses global fixtures
-        ri_instance = baker.make(RecipeIngredient, recipe=test_recipe, ingredient=test_ingredient, quantity=250, unit=test_unit)
+    def setup_recipe_ingredient_serializer_data(self, test_user, test_recipe, test_ingredient, test_unit): # Removed test_unit_type as it's not directly used here
+        ri_instance = baker.make(RecipeIngredient, recipe=test_recipe, ingredient=test_ingredient, quantity=250, unit=test_unit, created_at=timezone.now()) # Removed updated_at
         return {
             'recipe_ingredient': ri_instance,
+            'user': test_user, # Added user to fixture data for consistency if needed elsewhere
             'recipe': test_recipe,
             'ingredient': test_ingredient,
             'unit': test_unit,
-            'user': test_user,
-            'unit_type': test_unit_type # For creating new ingredients if needed
         }
 
     def test_recipe_ingredient_serializer_serialization(self, setup_recipe_ingredient_serializer_data):
@@ -308,11 +307,11 @@ class TestRecipeIngredientSerializers:
         assert data['quantity'] == 250
         assert data['ingredient'] == setup_recipe_ingredient_serializer_data['ingredient'].id
         assert data['unit'] == setup_recipe_ingredient_serializer_data['unit'].id
+        assert 'created_at' not in data # Standard serializer should not expose created_at
+        assert 'updated_at' not in data # Not in model, so not in serializer
 
-
-    def test_recipe_ingredient_serializer_create(self, test_user, test_recipe, test_ingredient, test_unit, test_unit_type): # Uses global fixtures
+    def test_recipe_ingredient_serializer_create(self, test_user, test_recipe, test_ingredient, test_unit, test_unit_type):
         """Tests RecipeIngredientSerializer can create a new RecipeIngredient."""
-        # Use existing fixtures for related objects or create new ones for specific test scenarios
         new_recipe = baker.make(Recipe, name='New RI Recipe', user_id=test_user, duration_minutes=10, commensals=1)
         new_quantity = 500
         new_ingredient = baker.make(Ingredient, name='New Ingred for RI', user_id=test_user, unit_type_id=test_unit_type)
@@ -346,7 +345,10 @@ class TestRecipeIngredientSerializers:
         assert data['ingredient'] == setup_recipe_ingredient_serializer_data['ingredient'].id
         assert data['quantity'] == 250
         assert data['unit'] == setup_recipe_ingredient_serializer_data['unit'].id
-        assert 'created_at' in data
+        assert 'created_at' in data # This should be present for Admin serializer
+        # Removed the assertion for 'updated_at' as it's not in the model
+        # assert 'updated_at' in data 
+
 
     def test_recipe_ingredient_admin_serializer_update(self, setup_recipe_ingredient_serializer_data, test_user, test_unit_type): # Uses global fixtures
         """Tests RecipeIngredientAdminSerializer can update fields (except read_only_fields)."""
@@ -404,7 +406,7 @@ class TestRecipeSerializers:
 
     @pytest.fixture
     def setup_recipe_serializer_data(self, test_user, test_unit_type): # Uses global fixtures
-        # CORRECTED: Explicitly create recipe with the name expected by tests
+        # Explicitly create recipe with the name expected by tests
         recipe = baker.make(Recipe, name='Test Recipe S', user_id=test_user, duration_minutes=30, commensals=2)
         category1 = baker.make(Category, name='CatRS1', user_id=test_user)
         category2 = baker.make(Category, name='CatRS2', user_id=test_user)
