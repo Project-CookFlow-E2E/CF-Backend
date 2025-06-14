@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from shopping.models.shoppingListItem import ShoppingListItem
-
+from users.models.user import CustomUser
+from recipes.models.ingredient import Ingredient
+from measurements.models.unit import Unit
 
 class ShoppingListItemSerializer(serializers.ModelSerializer):
 
@@ -30,8 +32,8 @@ class ShoppingListItemSerializer(serializers.ModelSerializer):
         Lorena Martínez
     """
 
-    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
-    ingredient_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    ingredient_id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    unit = serializers.PrimaryKeyRelatedField(queryset=Unit.objects.all(), allow_null=True, required=False)
 
     class Meta:
         model = ShoppingListItem
@@ -40,7 +42,7 @@ class ShoppingListItemSerializer(serializers.ModelSerializer):
             'ingredient_id',
             'quantity_needed',
             'unit',
-            'is_purchased'
+            'is_purchased',
         ]
 
         read_only_fields = ['user_id']
@@ -73,10 +75,11 @@ class ShoppingListItemAdminSerializer(serializers.ModelSerializer):
         Lorena Martínez
     """
 
-    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
-    ingredient_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    user_id = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
+    ingredient_id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    unit = serializers.PrimaryKeyRelatedField(queryset=Unit.objects.all(), allow_null=True, required=False)
 
     class Meta:
         model = ShoppingListItem
         fields = '__all__'
-        read_only_fields = ['id', 'user_id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']

@@ -3,7 +3,7 @@ import pytest
 from django.db import IntegrityError, DataError
 from model_bakery import baker
 from measurements.models import Unit, UnitType
-from users.models.user import CustomUser # Assuming Unit.user_id points to CustomUser
+from users.models.user import CustomUser
 from django.utils import timezone
 
 
