@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly, IsAdminUser, SAFE_METHODS
 from recipes.models.step import Step
 from recipes.serializers.stepSerializer import StepSerializer, StepAdminSerializer
+from media.services.image_service import update_image_for_instance
 
 class StepViewSet(viewsets.ModelViewSet):
     """
@@ -46,6 +47,17 @@ class StepViewSet(viewsets.ModelViewSet):
         if recipe_id:
             return Step.objects.filter(recipe__id=recipe_id)
         return super().get_queryset()
+    def perform_create(self, serializer): 
+        step = serializer.save(user=self.request.user)
+
+        image_file = self.request.FILES.get("step_image")
+        if image_file:
+            update_image_for_instance(
+                image_file=image_file,
+                user_id=self.request.user.id,
+                external_id=step.id,
+                image_type="STEP"
+            )
 
 class StepAdminViewSet(viewsets.ModelViewSet):
     """
