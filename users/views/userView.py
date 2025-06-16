@@ -1,7 +1,9 @@
+from django.core.exceptions import PermissionDenied
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.shortcuts import get_object_or_404
 
@@ -97,16 +99,22 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
         """
         # For the URL /users/me/
         if self.kwargs.get('pk') == 'me':
+            if not self.request.user.is_authenticated:
+                raise AuthenticationFailed("Autenticación requerida para acceder a 'me'.")
             return self.request.user
 
-        # For the URL /users/{pk}/, ensure the PK corresponds to the logged-in user
-        obj = get_object_or_404(self.get_queryset(), pk=self.kwargs['pk'])
-        if obj != self.request.user:
-            self.permission_denied(
-                self.request,
-                message="No tienes permiso para acceder a este perfil."
-            )
-        return obj
+        if 'pk' in self.kwargs:
+            obj = get_object_or_404(self.get_queryset(), pk=self.kwargs['pk'])
+
+            # Garantiza que un usuario solo pueda ver/editar su propio perfil
+            if obj != self.request.user:
+                raise PermissionDenied("No tienes permiso para acceder a este perfil.")
+            return obj
+
+            # Si llegamos aquí, la URL no es ni /me/ ni /<int:pk>/
+            # Esto indica una configuración de URL incorrecta o una petición inesperada.
+        from django.http import Http404
+        raise Http404("No se encontró un usuario que coincida con los criterios de la URL.")
 
     def get_serializer_class(self):
         """
