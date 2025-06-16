@@ -12,6 +12,7 @@ from measurements.models.unit import Unit
 from measurements.models.unitType import UnitType
 from measurements.serializers.unitSerializer import UnitSerializer, UnitAdminSerializer
 from measurements.serializers.unitTypeSerializer import UnitTypeSerializer, UnitTypeAdminSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 class UnitViewSet(viewsets.ModelViewSet):
     """ViewSet para manejar las operaciones CRUD de las unidades de medida. 
@@ -23,6 +24,8 @@ class UnitViewSet(viewsets.ModelViewSet):
         - `UnitViewSet`: Un conjunto de vistas que permite realizar operaciones CRUD sobre el modelo Unit.   
     """
     queryset = Unit.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['unit_type']
 
     def get_serializer_class(self):
         """Determina qué clase de serializador usar según el método HTTP y los permisos del usuario.

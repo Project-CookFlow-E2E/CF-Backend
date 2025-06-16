@@ -28,8 +28,6 @@ class Command(BaseCommand):
             user.set_password("admin12345")
             user.save()
 
-        category, _ = Category.objects.get_or_create(name="General", defaults={})
-
         seed_data = [
             {
                 "name": "Tortilla de papas",
@@ -37,7 +35,7 @@ class Command(BaseCommand):
                 "user_id": user,
                 "duration_minutes": 30,
                 "commensals": 4,
-                "categories": [category],
+                "categories": [5,7],
                 "steps": [
                     {
                         "order": 1,
@@ -63,7 +61,7 @@ class Command(BaseCommand):
                 "user_id": user,
                 "duration_minutes": 45,
                 "commensals": 2,
-                "categories": [category],
+                "categories": [5,6],
             },
         ]
 

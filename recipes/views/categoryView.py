@@ -5,6 +5,7 @@ from recipes.serializers.categorySerializer import (
     CategorySerializer,
     CategoryAdminSerializer,
 )
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CategoryView(viewsets.ModelViewSet):
@@ -18,21 +19,23 @@ class CategoryView(viewsets.ModelViewSet):
 
     Autor: Ana Castro
     """
+    queryset = Category.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['parent_category_id']
+    # def get_queryset(self):
+    #     """
+    #     Obtiene el conjunto de categorías disponibles.
 
-    def get_queryset(self):
-        """
-        Obtiene el conjunto de categorías disponibles.
-
-        Returns:
-            QuerySet: Todas las instancias de la clase Category.
-        """
-        queryset = Category.objects.all()  # Trae todas las categorías
+    #     Returns:
+    #         QuerySet: Todas las instancias de la clase Category.
+    #     """
+    #     queryset = Category.objects.all()  # Trae todas las categorías
         
-        parent_category_id = self.request.query_params.get("parent_category_id")  # Obtiene el valor del parámetro
-        if parent_category_id is not None:
-            queryset = queryset.filter(parent_category_id=parent_category_id)  # Filtra por parent_category_id
+    #     parent_category_id = self.request.query_params.get("parent_category_id")  # Obtiene el valor del parámetro
+    #     if parent_category_id is not None:
+    #         queryset = queryset.filter(parent_category_id=parent_category_id)  # Filtra por parent_category_id
         
-        return queryset
+    #     return queryset
     
     def get_permissions(self):
         """
