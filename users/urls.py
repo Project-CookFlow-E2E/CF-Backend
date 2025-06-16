@@ -47,8 +47,8 @@ urlpatterns = [
     # Auth and user routes
     path('register/', UserRegistrationView.as_view(), name='user-register'),
     path('login/', UserLoginView.as_view(), name='user-login'),
-    path('users/me/', UserProfileView.as_view(), name='user-profile-me'),
-    path('users/<int:pk>/', UserProfileView.as_view(), name='user-profile-detail'),
+    # path('users/me/', UserProfileView.as_view(), name='user-profile-me'),
+    path('users/<str:pk>/', UserProfileView.as_view(), name='user-profile-detail'),
 
     # User administration routes
     path('admin/users/', AdminUserViewSet.as_view(), name='admin-user-list-create'),

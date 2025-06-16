@@ -98,11 +98,12 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
         Si la URL es /users/{pk}/, verifica que el pk coincida con el usuario autenticado.
         """
         # For the URL /users/me/
-        if self.kwargs.get('pk') == 'me':
+        pk = self.kwargs.get('pk', None)
+        if pk == 'me':
             if not self.request.user.is_authenticated:
                 raise AuthenticationFailed("Autenticación requerida para acceder a 'me'.")
             return self.request.user
-
+        pk = int(pk) if pk else None
         if 'pk' in self.kwargs:
             obj = get_object_or_404(self.get_queryset(), pk=self.kwargs['pk'])
 
