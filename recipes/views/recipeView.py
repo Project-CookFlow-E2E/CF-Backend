@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from recipes.models.recipe import Recipe
@@ -21,6 +22,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         {Lorena Martínez}
     """
     queryset = Recipe.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user_id']
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
