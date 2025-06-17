@@ -13,7 +13,7 @@ from .views.userView import (
     UserFavoriteDestroyView,
     AdminFavoriteViewSet
 )
-
+from users.views.tokenView import MyTokenObtainPairView
 """
 Definición de las rutas de API para la gestión de usuarios y recetas favoritas.
 
@@ -63,7 +63,8 @@ urlpatterns = [
     path('admin/favorites/<int:pk>/', AdminFavoriteViewSet.as_view(), name='admin-favorite-detail-update-destroy'),
 
     # Routes for get and refresh JWT tokens
-    path('token/', TokenObtainPairView.as_view(), name='token_obatin_pair'),
+    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('logout/', TokenBlacklistView.as_view(), name='token_blacklist')
+    path('logout/', TokenBlacklistView.as_view(), name='token_blacklist'),
+    # path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
