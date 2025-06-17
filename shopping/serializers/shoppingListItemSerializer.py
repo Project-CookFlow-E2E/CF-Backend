@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from recipes.serializers.ingredientFromSerializer import IngredientFromSerializer
+from recipes.serializers.ingredientSerializer import IngredientSerializer
 from shopping.models.shoppingListItem import ShoppingListItem
 from users.models.user import CustomUser
 from recipes.models.ingredient import Ingredient
@@ -32,14 +34,16 @@ class ShoppingListItemSerializer(serializers.ModelSerializer):
         Lorena Martínez
     """
 
-    ingredient_id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    # ingredient_id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     unit = serializers.PrimaryKeyRelatedField(queryset=Unit.objects.all(), allow_null=True, required=False)
+    ingredient = IngredientFromSerializer(read_only=True, source='ingredient_id')
 
     class Meta:
         model = ShoppingListItem
         fields = [
+            'id',
             'user_id',
-            'ingredient_id',
+            'ingredient',            
             'quantity_needed',
             'unit',
             'is_purchased',
