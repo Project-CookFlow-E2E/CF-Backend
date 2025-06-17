@@ -21,6 +21,10 @@ from ..serializers.favoriteSerializer import (
     FavoriteSerializer,
     FavoriteAdminSerializer
 )
+from rest_framework.parsers import MultiPartParser, FormParser
+from media.services.image_service import remove_image_file, update_image_for_instance
+from media.serializers.image_serializer import ImageAdminSerializer
+from media.models.image import Image
 
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -43,6 +47,10 @@ class UserRegistrationView(generics.CreateAPIView):
         - Agregada la lógica para devolver un error 409 (Conflict) si el error es por username o email duplicado.
         - Para otros errores de validación, responde con un error 400 (Bad Request).
         - Al crear un usuario exitosamente, devuelve el objeto creado con un código 201 (Created).
+    Modified by: 
+        Lorena Martínez
+    Modified:
+        - Agregada la lógica para que un usuario autenticado pueda actualizar su imagen de perfil.
     """
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserCreateSerializer
@@ -242,3 +250,39 @@ class AdminFavoriteViewSet(generics.ListCreateAPIView, generics.RetrieveUpdateDe
     queryset = Favorite.objects.all()
     permission_classes = [IsAdminUser]
     serializer_class = FavoriteAdminSerializer
+
+
+class UserImageUpdateView(APIView):
+    """
+    Permite a un usuario autenticado actualizar su imagen de perfil.
+    Utiliza la función update_image_for_instance del servicio de imágenes.
+    """
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def put(self, request, *args, **kwargs):
+        image_file = request.FILES.get('image')
+        if not image_file:
+            return Response({'detail': 'No se ha enviado ninguna imagen.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+        image_obj = update_image_for_instance(
+            image_file=image_file,
+            user_id=user.id,
+            external_id=user.id,
+            image_type='USER'
+        )
+        serializer = ImageAdminSerializer(image_obj)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        image_obj = Image.objects.filter(external_id=user.id, type='USER').first()
+        if not image_obj:
+            return Response({'detail': 'No hay imagen para eliminar.'}, status=status.HTTP_404_NOT_FOUND)
+
+        remove_image_file(user.id, image_obj.url)
+        image_obj.delete()
+        return Response({'detail': 'Imagen eliminada correctamente.'}, status=status.HTTP_204_NO_CONTENT)
+
+
