@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 from recipes.models.ingredient import Ingredient
@@ -19,6 +20,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
         {Noemi Casaprima}
     """
     queryset = Ingredient.objects.filter(is_approved=True)  # Solo ingredientes aprobado
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['id']
     serializer_class = IngredientSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]  # CRUD solo para autenticados, GET para todos
 

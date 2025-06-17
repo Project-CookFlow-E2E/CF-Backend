@@ -25,7 +25,7 @@ class UnitViewSet(viewsets.ModelViewSet):
     """
     queryset = Unit.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['unit_type']
+    filterset_fields = ['unit_type', 'id']
 
     def get_serializer_class(self):
         """Determina qué clase de serializador usar según el método HTTP y los permisos del usuario.
