@@ -11,7 +11,8 @@ from .views.userView import (
     AdminUserViewSet,
     UserFavoriteListCreateView,
     UserFavoriteDestroyView,
-    AdminFavoriteViewSet
+    AdminFavoriteViewSet,
+    UserImageUpdateView
 )
 from users.views.tokenView import MyTokenObtainPairView
 """
@@ -49,6 +50,7 @@ urlpatterns = [
     path('login/', UserLoginView.as_view(), name='user-login'),
     # path('users/me/', UserProfileView.as_view(), name='user-profile-me'),
     path('users/<str:pk>/', UserProfileView.as_view(), name='user-profile-detail'),
+    path('users/me/image/', UserImageUpdateView.as_view(), name='user-image-update'),
 
     # User administration routes
     path('admin/users/', AdminUserViewSet.as_view(), name='admin-user-list-create'),
@@ -67,4 +69,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', TokenBlacklistView.as_view(), name='token_blacklist'),
     # path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+
 ]

@@ -9,7 +9,7 @@ venv/
 *.pyc
 __pycache__/
 **/__pycache__/
-
+img/
 
 # Configs del IDE
 .vscode/

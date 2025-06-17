@@ -3,6 +3,8 @@ from ..models.user import CustomUser
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from media.models.image import Image
+from media.serializers.image_serializer import ImageListSerializer
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -27,6 +29,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
         Saturnino Mendez
     """
 
+    image = serializers.SerializerMethodField()
+    
     class Meta:
         model = CustomUser
         fields = [
@@ -37,9 +41,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'surname',
             'second_surname',
             'biography',
+            'image',
             'created_at'
         ]
         read_only_fields = fields
+
+    def get_image(self, obj):
+        image = Image.objects.filter(external_id=obj.id, type='USER').first()
+        return ImageListSerializer(image).data if image else None
 
 
 class CustomUserAdminSerializer(serializers.ModelSerializer):
@@ -69,10 +78,16 @@ class CustomUserAdminSerializer(serializers.ModelSerializer):
         updated_at: Fecha de última actualización del registro.
     """
 
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = CustomUser
         fields = '__all__'
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def get_image(self, obj):
+        image = Image.objects.filter(external_id=obj.id, type='USER').first()
+        return ImageListSerializer(image).data if image else None
 
 
 class CustomUserCreateSerializer(serializers.ModelSerializer):
@@ -91,8 +106,10 @@ class CustomUserCreateSerializer(serializers.ModelSerializer):
         surname (str): Primer apellido del usuario.
         second_surname (str): Segundo apellido del usuario.
         biography (str): Biografía mostrada en el perfil del usuario.
+        image (str): URL de la imagen del avatar del usuario.
     """
     password = serializers.CharField(write_only=True, required=True)
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -103,7 +120,8 @@ class CustomUserCreateSerializer(serializers.ModelSerializer):
             'surname',
             'second_surname',
             'biography',
-            'password'
+            'password', 
+            'image'
         ]
 
     def validate_password(self, value):
@@ -122,6 +140,10 @@ class CustomUserCreateSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+    def get_image(self, obj):
+        image = Image.objects.filter(external_id=obj.id, type='USER').first()
+        return ImageListSerializer(image).data if image else None
 
 
 class CustomUserLoginSerializer(serializers.Serializer):
@@ -161,10 +183,11 @@ class CustomUserUpdateSerializer(serializers.ModelSerializer):
     """
 
     password = serializers.CharField(write_only=True, required=False)
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
-        fields = ['name', 'surname', 'second_surname', 'biography', 'password']
+        fields = ['name', 'surname', 'second_surname', 'biography', 'password', 'image']
 
     def validate_password(self, value):
         """
@@ -186,6 +209,10 @@ class CustomUserUpdateSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def get_image(self, obj):
+        image = Image.objects.filter(external_id=obj.id, type='USER').first()
+        return ImageListSerializer(image).data if image else None
+
 
 class CustomUserAdminUpdateSerializer(serializers.ModelSerializer):
     """
@@ -197,12 +224,12 @@ class CustomUserAdminUpdateSerializer(serializers.ModelSerializer):
     """
 
     password = serializers.CharField(write_only=True, required=False)
-
+    image = serializers.SerializerMethodField()
     class Meta:
         model = CustomUser
         fields = [
             'username', 'email', 'name', 'surname',
-            'second_surname', 'biography', 'is_staff', 'is_active', 'password'
+            'second_surname', 'biography', 'is_staff', 'is_active', 'password', 'image'
         ]
         read_only_fields = ['id']
 
@@ -219,6 +246,10 @@ class CustomUserAdminUpdateSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+    def get_image(self, obj):
+        image = Image.objects.filter(external_id=obj.id, type='USER').first()
+        return ImageListSerializer(image).data if image else None
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -247,7 +278,7 @@ class CustomUserFrontSerializer(serializers.ModelSerializer):
     """
     Serializador del modelo CustomUser para usuarios estándar (solo lectura).
 
-    Este serializador 
+
     Campos:
         id: ID único del usuario.
         username: Nombre de usuario único para inicio de sesión.
