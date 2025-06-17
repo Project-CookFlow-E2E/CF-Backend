@@ -24,13 +24,12 @@ class StepSerializer(serializers.ModelSerializer):
         {Rafael Fernández}
 
     """
-    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
     image = serializers.SerializerMethodField()
 
     class Meta:
         model = Step
         fields = ('order', 'description', 'id', 'recipe', 'created_at', 'updated_at', 'image')  
-        read_only_fields = ('id', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'created_at', 'updated_at', 'recipe')
     def get_image(self, obj):
         image = Image.objects.filter(external_id=obj.id, type='STEP').first()
         return ImageListSerializer(image).data if image else None
@@ -58,13 +57,12 @@ class StepAdminSerializer(serializers.ModelSerializer):
     Author:  
         {Rafael Fernández}
    """
-    steps = StepSerializer(many=True, read_only=True) 
     image = serializers.SerializerMethodField()
 
     class Meta:
         model = Step
         fields = '__all__'
-        read_only_fields = ('created_at', 'updated_at', 'id')
+        read_only_fields = ('created_at', 'updated_at', 'id', 'recipe')
         
     def get_image(self, obj):
         image = Image.objects.filter(external_id=obj.id, type='STEP').first()
