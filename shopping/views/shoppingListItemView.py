@@ -15,9 +15,12 @@ class ShoppingListItemView(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_staff:
             return ShoppingListItem.objects.all()
-        return ShoppingListItem.objects.filter(user=user)
+        return ShoppingListItem.objects.filter(user_id=user.id)
 
     def get_serializer_class(self):
         if self.request.user.is_staff:
             return ShoppingListItemAdminSerializer
         return ShoppingListItemSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user)
