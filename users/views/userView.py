@@ -22,8 +22,9 @@ from ..serializers.favoriteSerializer import (
     FavoriteAdminSerializer
 )
 from rest_framework.parsers import MultiPartParser, FormParser
-from media.services.image_service import update_image_for_instance
+from media.services.image_service import remove_image_file, update_image_for_instance
 from media.serializers.image_serializer import ImageAdminSerializer
+from media.models.image import Image
 
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -273,3 +274,15 @@ class UserImageUpdateView(APIView):
         )
         serializer = ImageAdminSerializer(image_obj)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        image_obj = Image.objects.filter(external_id=user.id, type='USER').first()
+        if not image_obj:
+            return Response({'detail': 'No hay imagen para eliminar.'}, status=status.HTTP_404_NOT_FOUND)
+
+        remove_image_file(user.id, image_obj.url)
+        image_obj.delete()
+        return Response({'detail': 'Imagen eliminada correctamente.'}, status=status.HTTP_204_NO_CONTENT)
+
+
