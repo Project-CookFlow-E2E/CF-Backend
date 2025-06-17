@@ -49,6 +49,7 @@ class StepViewSet(viewsets.ModelViewSet):
         return super().get_queryset()
 
     def perform_create(self, serializer):
+        step = serializer.save()
 
         image_file = self.request.FILES.get("step_image")
         if image_file:
