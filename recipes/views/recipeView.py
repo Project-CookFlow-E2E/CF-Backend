@@ -36,7 +36,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeSerializer
 
     def perform_create(self, serializer): 
-        recipe = serializer.save(user=self.request.user)
+        recipe = serializer.save(user_id=self.request.user)
 
         image_file = self.request.FILES.get("recipe_image")
         if image_file:

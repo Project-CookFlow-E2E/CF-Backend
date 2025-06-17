@@ -114,7 +114,7 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'updated_at'] 
+        read_only_fields = ['id', 'created_at', 'updated_at', 'user_id']
 
     def get_image(self, obj):
         image = Image.objects.filter(external_id=obj.id, type='RECIPE').first()
