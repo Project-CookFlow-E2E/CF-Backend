@@ -41,9 +41,10 @@ class ShoppingListItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingListItem
         fields = [
-            'id',
+            'id',                  # 👈 este es el que necesitas para el DELETE
             'user_id',
-            'ingredient',            
+            'ingredient',          # muestra el objeto (name, id)
+            'ingredient_id',       # 👈 también añade esto si lo necesitas en frontend
             'quantity_needed',
             'unit',
             'is_purchased',
