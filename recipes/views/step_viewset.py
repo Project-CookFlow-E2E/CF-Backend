@@ -47,8 +47,8 @@ class StepViewSet(viewsets.ModelViewSet):
         if recipe_id:
             return Step.objects.filter(recipe__id=recipe_id)
         return super().get_queryset()
-    def perform_create(self, serializer): 
-        step = serializer.save(user=self.request.user)
+
+    def perform_create(self, serializer):
 
         image_file = self.request.FILES.get("step_image")
         if image_file:
