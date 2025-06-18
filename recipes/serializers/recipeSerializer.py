@@ -1,3 +1,5 @@
+# recipes/serializers/recipeSerializer.py
+
 from rest_framework import serializers
 from recipes.models.recipe import Recipe
 from recipes.models.category import Category
@@ -11,6 +13,9 @@ from users.serializers.userSerializer import CustomUserFrontSerializer
 from .recipeIngredientSerializer import RecipeIngredientSerializer
 from media.models.image import Image
 from media.serializers.image_serializer import ImageListSerializer
+
+# Importa el servicio de imágenes
+from media.services.image_service import update_image_for_instance
 
 import json
 
@@ -83,57 +88,94 @@ class RecipeSerializer(serializers.ModelSerializer):
         return ImageListSerializer(image).data if image else None
 
     def create(self, validated_data):
-        steps_data_str = self.context['request'].data.get('steps')
-        ingredients_data_str = self.context['request'].data.get('ingredients')
+        request = self.context.get('request')
 
-        # Extraer las categorías de validated_data
-        # Si categories no está en validated_data, se usará una lista vacía
-        categories_data = validated_data.pop('categories', []) # <--- ¡CAMBIO AQUÍ!
+        ingredients_json = request.data.get('ingredients_data', '[]')
+        steps_json = request.data.get('steps_data', '[]')
 
-        ingredients_data = []
-        steps_data = []
+        # === FIX PARA CATEGORIAS ===
+        # Ahora las categorías vienen como una lista bajo la clave 'categories' en request.data
+        # Se usa .getlist() para asegurar que se recuperen todos los IDs de categorías
+        categories_ids = request.data.getlist('categories', [])
 
-        if ingredients_data_str:
+
+        try:
+            parsed_ingredients = json.loads(ingredients_json)
+        except json.JSONDecodeError:
+            raise serializers.ValidationError({"ingredients_data": "Formato JSON de ingredientes inválido."})
+
+        try:
+            parsed_steps = json.loads(steps_json)
+        except json.JSONDecodeError:
+            raise serializers.ValidationError({"steps_data": "Formato JSON de pasos inválido."})
+
+        # === FIX PARA KeyError: 'user' ===
+        # 'validated_data' contiene 'user_id', no 'user'.
+        user = validated_data.pop('user_id')
+
+
+        # Asegúrate de eliminar 'categories' de validated_data si lo tienes, ya que lo gestionamos aparte.
+        validated_data.pop('categories', None)
+
+        recipe = Recipe.objects.create(user_id=user, **validated_data)
+
+        if categories_ids:
+            recipe.categories.set(categories_ids)
+
+        for ing_data in parsed_ingredients:
+            ingredient_id = ing_data.get('ingredient')
+            quantity = ing_data.get('quantity')
+            unit_id = ing_data.get('unit')
+
+            if not all([ingredient_id, quantity, unit_id]):
+                raise serializers.ValidationError("Datos incompletos para el ingrediente de la receta.")
+
             try:
-                ingredients_data = json.loads(ingredients_data_str)
-            except json.JSONDecodeError:
-                raise serializers.ValidationError({"ingredients": "Formato JSON de ingredientes inválido."})
-
-        if steps_data_str:
-            try:
-                steps_data = json.loads(steps_data_str)
-            except json.JSONDecodeError:
-                raise serializers.ValidationError({"steps": "Formato JSON de pasos inválido."})
-
-        # Crear la receta S-I-N categorías
-        recipe = Recipe.objects.create(**validated_data) # <--- AHORA validated_data NO contiene 'categories'
-
-        # Asignar las categorías después de crear la receta
-        if categories_data: # Solo si hay categorías para asignar
-            recipe.categories.set(categories_data) # <--- ¡CAMBIO AQUÍ!
-
-        for item in ingredients_data:
-            try:
-                ingredient_obj = Ingredient.objects.get(id=item['ingredient'])
-                unit_obj = Unit.objects.get(id=item['unit'])
+                ingredient = Ingredient.objects.get(id=ingredient_id)
+                unit_obj = Unit.objects.get(id=unit_id)
+                RecipeIngredient.objects.create(
+                    recipe=recipe,
+                    ingredient=ingredient,
+                    quantity=quantity,
+                    unit=unit_obj
+                )
             except (Ingredient.DoesNotExist, Unit.DoesNotExist) as e:
-                raise serializers.ValidationError(
-                    {"detail": f"Ingrediente o unidad no encontrado: {e}. Asegúrate de que los IDs existan."}
-                ) from e
+                # Este print es un error, no un debug, por lo que se mantiene.
+                print(f"ERROR: Ingrediente o unidad no encontrado durante la creación: {e}")
+                raise serializers.ValidationError(f"Ingrediente o unidad no encontrado: {e}")
 
-            RecipeIngredient.objects.create(
-                recipe=recipe,
-                ingredient=ingredient_obj,
-                quantity=item['quantity'],
-                unit=unit_obj,
+        # === La parte de los archivos sigue esperando que vengan en request.FILES ===
+        recipe_photo_file = request.FILES.get('photo')
+        if recipe_photo_file:
+            update_image_for_instance(
+                image_file=recipe_photo_file,
+                user_id=request.user.id,
+                external_id=recipe.id,
+                image_type=Image.ImageType.RECIPE
             )
 
-        for item in steps_data:
-            Step.objects.create(
+
+        for idx, step_data in enumerate(parsed_steps):
+            order = step_data.get('order')
+            text = step_data.get('description')
+
+            if not all([order, text]):
+                raise serializers.ValidationError(f"Datos incompletos para el paso {idx+1}.")
+
+            step_obj = Step.objects.create(
                 recipe=recipe,
-                order=item['order'],
-                description=item['description'],
+                order=order,
+                description=text,
             )
+
+            step_image_file = request.FILES.get(f'step_image_{idx}')
+            if step_image_file:
+                update_image_for_instance(
+                    image_file=step_image_file,
+                    user_id=request.user.id,
+                    external_id=step_obj.id,
+                    image_type=Image.ImageType.STEP
+                )
 
         return recipe
 
@@ -273,6 +315,10 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
         image = Image.objects.filter(external_id=obj.id, type='RECIPE').first()
         return ImageListSerializer(image).data['url'] if image else None
 
+    # Si el RecipeAdminSerializer también va a manejar subidas de imágenes
+    # y los mismos campos que el RecipeSerializer regular, deberías copiar
+    # el método 'create' corregido de arriba también aquí.
+    # Por ahora, dejo tu 'create' original para RecipeAdminSerializer.
     def create(self, validated_data):
 
         """
@@ -286,7 +332,7 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
         steps_data_str = self.context['request'].data.get('steps')
 
         # Extraer las categorías de validated_data
-        categories_data = validated_data.pop('categories', []) # <--- ¡CAMBIO AQUÍ!
+        categories_data = validated_data.pop('categories', [])
 
         ingredients_data = []
         steps_data = []
