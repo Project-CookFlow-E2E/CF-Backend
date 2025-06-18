@@ -6,7 +6,7 @@ from recipes.models.category import Category
 from recipes.models.recipeIngredient import RecipeIngredient
 from recipes.models.step import Step
 from recipes.models.ingredient import Ingredient
-from measurements.models.unit import Unit # Usamos Unit, confirma que este es tu modelo de unidades
+from measurements.models.unit import Unit
 
 from recipes.serializers.stepSerializer import StepSerializer
 from users.serializers.userSerializer import CustomUserFrontSerializer
@@ -89,20 +89,14 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get('request')
-        print("\n--- DEBUG: Entering RecipeSerializer.create() ---")
-        print(f"DEBUG: validated_data keys: {validated_data.keys()}")
-        print(f"DEBUG: request.FILES keys: {request.FILES.keys()}")
-
-        print(f"DEBUG: Tipo de request.data: {type(request.data)}")
-        print(f"DEBUG: Contenido de request.data: {request.data}")
 
         ingredients_json = request.data.get('ingredients_data', '[]')
         steps_json = request.data.get('steps_data', '[]')
 
         # === FIX PARA CATEGORIAS ===
         # Ahora las categorías vienen como una lista bajo la clave 'categories' en request.data
-        categories_ids = request.data.get('categories', []) # <--- LÍNEA CORREGIDA
-        print(f"DEBUG: IDs de categorías desde request.data.get('categories'): {categories_ids}")
+        # Se usa .getlist() para asegurar que se recuperen todos los IDs de categorías
+        categories_ids = request.data.getlist('categories', [])
 
 
         try:
@@ -117,18 +111,16 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         # === FIX PARA KeyError: 'user' ===
         # 'validated_data' contiene 'user_id', no 'user'.
-        user = validated_data.pop('user_id') # <--- LÍNEA CORREGIDA
+        user = validated_data.pop('user_id')
 
 
         # Asegúrate de eliminar 'categories' de validated_data si lo tienes, ya que lo gestionamos aparte.
         validated_data.pop('categories', None)
 
         recipe = Recipe.objects.create(user_id=user, **validated_data)
-        print(f"DEBUG: Receta creada con ID: {recipe.id}")
 
         if categories_ids:
             recipe.categories.set(categories_ids)
-            print(f"DEBUG: Categorías asignadas a la receta {recipe.id}: {categories_ids}")
 
         for ing_data in parsed_ingredients:
             ingredient_id = ing_data.get('ingredient')
@@ -147,25 +139,20 @@ class RecipeSerializer(serializers.ModelSerializer):
                     quantity=quantity,
                     unit=unit_obj
                 )
-                print(f"DEBUG: Ingrediente de receta creado para receta {recipe.id}, ingrediente {ingredient_id}")
             except (Ingredient.DoesNotExist, Unit.DoesNotExist) as e:
+                # Este print es un error, no un debug, por lo que se mantiene.
                 print(f"ERROR: Ingrediente o unidad no encontrado durante la creación: {e}")
                 raise serializers.ValidationError(f"Ingrediente o unidad no encontrado: {e}")
 
         # === La parte de los archivos sigue esperando que vengan en request.FILES ===
         recipe_photo_file = request.FILES.get('photo')
-        print(f"DEBUG: archivo de foto de receta recibido: {recipe_photo_file.name if recipe_photo_file else 'None'}")
         if recipe_photo_file:
-            print("DEBUG: Llamando a update_image_for_instance para la foto de la receta...")
             update_image_for_instance(
                 image_file=recipe_photo_file,
                 user_id=request.user.id,
                 external_id=recipe.id,
                 image_type=Image.ImageType.RECIPE
             )
-            print("DEBUG: update_image_for_instance para la foto de la receta finalizado.")
-        else:
-            print("DEBUG: No se proporcionó archivo de foto de receta en request.FILES.")
 
 
         for idx, step_data in enumerate(parsed_steps):
@@ -180,23 +167,16 @@ class RecipeSerializer(serializers.ModelSerializer):
                 order=order,
                 description=text,
             )
-            print(f"DEBUG: Paso {idx} creado con ID: {step_obj.id}")
 
             step_image_file = request.FILES.get(f'step_image_{idx}')
-            print(f"DEBUG: archivo de imagen de paso {idx} recibido: {step_image_file.name if step_image_file else 'None'}")
             if step_image_file:
-                print(f"DEBUG: Llamando a update_image_for_instance para step_image_{idx}...")
                 update_image_for_instance(
                     image_file=step_image_file,
                     user_id=request.user.id,
                     external_id=step_obj.id,
                     image_type=Image.ImageType.STEP
                 )
-                print(f"DEBUG: update_image_for_instance para step_image_{idx} finalizado.")
-            else:
-                print(f"DEBUG: No se proporcionó archivo de imagen para el paso {idx} en request.FILES.")
 
-        print("--- DEBUG: Saliendo de RecipeSerializer.create() ---")
         return recipe
 
     def update(self, instance, validated_data):
@@ -352,7 +332,7 @@ class RecipeAdminSerializer(serializers.ModelSerializer):
         steps_data_str = self.context['request'].data.get('steps')
 
         # Extraer las categorías de validated_data
-        categories_data = validated_data.pop('categories', []) # <--- ¡CAMBIO AQUÍ!
+        categories_data = validated_data.pop('categories', [])
 
         ingredients_data = []
         steps_data = []

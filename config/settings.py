@@ -249,5 +249,3 @@ SPECTACULAR_SETTINGS = {
     #     'expandResponses': '200,201',
     # }
 }
-
-print("--- DEBUG: settings.py cargado correctamente y con mis prints ---")
