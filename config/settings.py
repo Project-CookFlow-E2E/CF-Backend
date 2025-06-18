@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'shopping',
     'measurements',
     'media',
-    'rest_framework_simplejwt.token_blacklist'
+    'rest_framework_simplejwt.token_blacklist',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -119,6 +120,7 @@ DATABASES = {
 # }
 
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
@@ -227,3 +229,23 @@ MEDIA_ROOT = BASE_DIR / 'media'  # Carpeta donde se guardan los archivos
 
 # Carpeta específica para imágenes (usada en imageViewSet.py)
 MEDIA_IMG_PATH = MEDIA_ROOT / 'img'
+
+# API Documentación
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'CookFlow API',
+    'DESCRIPTION': 'API for managing recipes, users, and shopping lists.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False, # This makes sure the schema itself is not included in the UI by default
+    # Optional: Authentication for swagger UI
+    # 'SWAGGER_UI_SETTINGS': {
+    #     'deepLinking': True,
+    #     'displayRequestDuration': True,
+    #     'filter': True,
+    #     'persistAuthorization': True,
+    #     'docExpansion': 'none', # 'list' or 'full'
+    # },
+    # 'REDOC_UI_SETTINGS': {
+    #     'hideDownloadButton': True,
+    #     'expandResponses': '200,201',
+    # }
+}
