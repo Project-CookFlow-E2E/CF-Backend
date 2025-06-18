@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework import filters
 from recipes.models.recipe import Recipe
 from recipes.serializers.recipeSerializer import RecipeSerializer, RecipeAdminSerializer
 from media.services.image_service import update_image_for_instance
@@ -23,10 +24,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     Author:
         {Lorena Martínez}
+
+    Modifiedby:
+        {Ángel Aragón}
+    Mofified:
+        Agregados filtro
     """
     queryset = Recipe.objects.all()
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['user_id', 'id']
+    ordering_fields = ['created_at']
+    ordering = ['-created_at']
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
@@ -70,4 +78,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
         random_recipes = self.get_queryset().filter(id__in=random_ids)
 
         serializer = self.get_serializer(random_recipes, many=True)
+        return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        # Limitar resultados si se pasa el parámetro 'limit'
+        limit = request.query_params.get('limit')
+        if limit is not None and limit.isdigit():
+            queryset = queryset[:int(limit)]
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
