@@ -92,7 +92,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=50, null=False)
     surname = models.CharField(max_length=50, null=False)
     second_surname = models.CharField(max_length=50, null=False)
-    biography = models.CharField(max_length=100, null=True, blank=True)
+    biography = models.CharField(max_length=500, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
