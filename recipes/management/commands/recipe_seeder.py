@@ -9,24 +9,11 @@ class Command(BaseCommand):
     help = "Seed initial recipes into the database."
 
     def handle(self, *args, **options):
-        # Busca usuario y categoría de ejemplo, crea si no existen
-        user, _ = CustomUser.objects.get_or_create(
-            username="admin",
-            defaults={
-                "email": "admin@example.com",
-                "name": "Admin",
-                "surname": "Principal",
-                "second_surname": "Root",
-                "biography": "Super user of the system",
-                "is_staff": True,
-                "is_superuser": True,
-                "password": "admin12345",  # Ojo, esto no la hashea, solo para seeds iniciales
-            },
-        )
-        # Si el user fue recién creado, setea la password de forma segura
-        if not user.check_password("admin12345"):
-            user.set_password("admin12345")
-            user.save()
+        try:
+            user = CustomUser.objects.get(username="cookflow")
+        except CustomUser.DoesNotExist:
+            self.stdout.write(self.style.ERROR("El usuario 'cookflow' no existe."))
+            return
 
         seed_data = [
             {
@@ -62,6 +49,46 @@ class Command(BaseCommand):
                 "duration_minutes": 45,
                 "commensals": 2,
                 "categories": [5,6],
+                "steps": [
+                    {
+                        "order": 1,
+                        "description": "Empaniza la milanesa con huevo y pan rallado.",
+                    },
+                    {
+                        "order": 2,
+                        "description": "Fríe la milanesa en aceite caliente.",
+                    },
+                    {
+                        "order": 3,
+                        "description": "Agrega salsa de tomate y queso por encima.",
+                    },
+                    {
+                        "order": 4,
+                        "description": "Gratina en el horno hasta que el queso se derrita.",
+                    },
+                ],
+            },
+            {
+                "name": "Hamburguesa casera",
+                "description": "Una jugosa hamburguesa con todos los ingredientes.",
+                "user_id": user,
+                "duration_minutes": 30,
+                "commensals": 4,
+                "categories": [5, 7],
+                "steps": [
+                    {
+                        "order": 1,
+                        "description": "Forma las hamburguesas con la carne molida.",
+                    },
+                    {
+                        "order": 2,
+                        "description": "Fríelas en aceite hasta que estén doradas.",
+                    },
+                    {
+                        "order": 3,
+                        "description": "Coloca las hamburguesas en pan con los ingredientes deseados.",
+                    },
+                ],
             },
         ]
 
@@ -70,7 +97,7 @@ class Command(BaseCommand):
                 name=data["name"],
                 defaults={
                     "description": data["description"],
-                    "user_id": data["user_id"],
+                    "user_id": user,
                     "duration_minutes": data["duration_minutes"],
                     "commensals": data["commensals"],
                 },

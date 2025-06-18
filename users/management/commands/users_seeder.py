@@ -8,17 +8,6 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         users_data = [
             {
-                'username': 'cookflow',
-                'email': 'cookflow@example.com',
-                'name': 'Chef',
-                'surname': 'Gourmet',
-                'second_surname': 'Kitchen',
-                'biography': 'Administrador del sistema.',
-                'is_staff': True,
-                'is_superuser': True,
-                'password': 'adminpass123',
-            },
-            {
                 'username': 'juan123',
                 'email': 'juan@example.com',
                 'name': 'Juan',
