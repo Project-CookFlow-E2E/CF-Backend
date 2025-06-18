@@ -29,13 +29,13 @@ class Image(models.Model):
         max_length=15,
         choices=ImageType.choices
     )
-    url = models.CharField(max_length=100)
+    url = models.CharField(max_length=100, null=True, blank=True)
     processing_status = models.CharField(
         max_length=15,
         choices=ImageStatus.choices,
         default="uploaded"
     )
-    external_id = models.BigIntegerField()
+    external_id = models.BigIntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
