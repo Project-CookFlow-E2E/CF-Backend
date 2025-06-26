@@ -2,6 +2,10 @@
 
 This is the backend for the CookFlow project, powered by Django and PostgreSQL.
 
+## Docker
+
+Follow Instructions from Front End Repo 
+
 ## 🚀 Installation
 
 Follow these steps to set up the project on your local machine:
