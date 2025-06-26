@@ -1,3 +1,4 @@
+# measurements/management/commands/unitType_seeder.py
 from django.core.management.base import BaseCommand
 from measurements.models.unitType import UnitType 
 
@@ -9,7 +10,7 @@ class Command(BaseCommand):
         unit_types_data = [
             {"id": 1, "name": "peso"},
             {"id": 2, "name": "volumen"},
-            {"id": 3, "name": "unitario"}
+            {"id": 3, "name": "unitario"} # Keeping it as 'unitario'
         ]
 
         # Crea o actualiza los tipos de unidad con IDs específicos

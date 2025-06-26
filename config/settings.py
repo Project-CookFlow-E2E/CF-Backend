@@ -107,7 +107,7 @@ DATABASES = {
         'NAME': 'cookflow_db',
         'USER': 'admin',
         'PASSWORD': 'admin',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
