@@ -1,8 +1,8 @@
 # cookflow-backend/users/management/commands/users_seeder.py
 from django.core.management.base import BaseCommand
-from users.models.user import CustomUser # Assuming CustomUser is your user model
+from users.models.user import CustomUser
 from django.contrib.auth.hashers import make_password
-from django.db import connection # Import connection to execute raw SQL
+from django.db import connection
 
 class Command(BaseCommand):
     help = 'Seeds initial user data.'
@@ -10,10 +10,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Ejecutando users_seeder...")
 
-        # Create 'admin' user (ID=1)
         try:
             admin_user, created = CustomUser.objects.get_or_create(
-                id=1, # Explicitly set ID for consistency across seeders
+                id=2,
                 defaults={
                     'username': 'admin',
                     'email': 'admin@example.com',
@@ -44,20 +43,16 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.WARNING(f'Usuario "{admin_user.username}" (ID: {admin_user.id}) ya existe.'))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"❌ Error creating/getting admin user: {e}"))
-            # If admin user creation fails, subsequent seeders will likely fail.
-            # You might want to re-raise or exit here if it's a critical failure.
 
-
-        # Create the 'cookflow' user
         try:
             cookflow_user, created = CustomUser.objects.get_or_create(
-                id=2, # Explicitly set ID to 2
+                id=3,
                 username='cookflow',
                 defaults={
                     'email': 'cookflow@example.com',
                     'name': 'Cook',
                     'surname': 'Flow',
-                    'password': make_password('cookflowpass'), # Choose a secure password!
+                    'password': make_password('cookflowpass'),
                     'is_staff': False,
                     'is_superuser': False,
                     'is_active': True,
@@ -70,22 +65,14 @@ class Command(BaseCommand):
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"❌ Error creating/getting cookflow user: {e}"))
 
-        # --- IMPORTANT: Reset the database sequence after manually setting IDs ---
-        # Find the max ID used in CustomUser
         max_id = CustomUser.objects.all().order_by('-id').first().id if CustomUser.objects.exists() else 0
         
-        # Get the name of the sequence for CustomUser model's primary key
-        # This is typically 'appname_modelname_id_seq'
         sequence_name = f"{CustomUser._meta.db_table}_id_seq"
 
         with connection.cursor() as cursor:
-            # Set the sequence to the max_id + 1
             cursor.execute(f"SELECT setval('{sequence_name}', {max_id + 1}, false);")
             self.stdout.write(self.style.NOTICE(f"Database sequence for {CustomUser._meta.db_table} reset to {max_id + 1}."))
-        # --- END IMPORTANT ---
 
-
-        # Your existing code to create other users (juan123, ana456, mario789)
         users_data = [
             {
                 'username': 'juan123', 'email': 'juan@example.com', 'name': 'Juan',
