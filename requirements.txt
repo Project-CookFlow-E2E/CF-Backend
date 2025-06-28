@@ -1,5 +1,4 @@
 asgiref==3.8.1
-colorama==0.4.6
 Django==5.2.3
 django-cors-headers==4.7.0
 django-filter==25.1
@@ -17,8 +16,8 @@ pytest==8.4.0
 pytest-django==4.11.1
 sqlparse==0.5.3
 tzdata==2025.2
-Faker
 argon2-cffi==25.1.0
 argon2-cffi-bindings==21.2.0
 cffi==1.17.1
 pycparser==2.22
+dj_database_url
