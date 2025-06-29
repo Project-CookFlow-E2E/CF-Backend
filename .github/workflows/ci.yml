@@ -1,4 +1,4 @@
-# cookflow-backend/.github/workflows/ci.yml
+# CF-backend/.github/workflows/ci.yml
 name: Backend CI & E2E Trigger
 
 on:

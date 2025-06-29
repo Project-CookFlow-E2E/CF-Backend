@@ -12,8 +12,8 @@ Follow these steps to set up the project on your local machine:
 
 ### 1. Clone the repository
 
-`git clone https://github.com/Final-Project-CookFlow/cookflow-backend.git`
-`cd cookflow-backend`
+`git clone https://github.com/Final-Project-CookFlow/CF-backend.git`
+`cd CF-backend`
 
 ### 2. Create a virtual environment
 

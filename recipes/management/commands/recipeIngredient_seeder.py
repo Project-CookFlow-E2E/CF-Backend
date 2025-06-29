@@ -1,4 +1,4 @@
-# cookflow-backend/recipes/management/commands/recipeIngredient_seeder.py
+# CF-backend/recipes/management/commands/recipeIngredient_seeder.py
 from django.core.management.base import BaseCommand
 from recipes.models.recipeIngredient import RecipeIngredient
 from recipes.models.recipe import Recipe
