@@ -130,3 +130,5 @@ Coverage:
 Model Tests (shopping/tests/test_models.py): Focus on the ShoppingListItem model, verifying its fields, default values (e.g., is_purchased), relationships to users, ingredients, and units, and its string representation. Tests also cover cascade onDelete behavior for related objects.
 
 Serializer Tests (shopping/tests/test_serializers.py): Validate ShoppingListItemSerializer (for standard users) and ShoppingListItemAdminSerializer (for administrators). These tests confirm accurate serialization, correct handling of creation and update operations (including ensuring read-only fields are not modified by unauthorized requests), and proper representation of related IDs.
+
+CI Test 1
