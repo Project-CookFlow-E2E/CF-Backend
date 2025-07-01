@@ -1,4 +1,4 @@
-# CF-Backend/healthz/urls.py
+# cf-backend/healthz/urls.py
 from django.urls import path
 from .views import health_check
 

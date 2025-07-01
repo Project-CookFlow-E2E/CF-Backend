@@ -1,4 +1,4 @@
-# CF-backend/conftest.py
+# cf-backend/conftest.py
 import pytest
 from model_bakery import baker
 from users.models.user import CustomUser

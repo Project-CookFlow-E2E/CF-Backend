@@ -1,4 +1,4 @@
-# CF-backend/users/management/commands/users_seeder.py
+# cf-backend/users/management/commands/users_seeder.py
 from django.core.management.base import BaseCommand
 from users.models.user import CustomUser
 from django.contrib.auth.hashers import make_password

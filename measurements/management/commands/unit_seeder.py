@@ -1,4 +1,4 @@
-# CF-backend/measurements/management/commands/unit_seeder.py
+# cf-backend/measurements/management/commands/unit_seeder.py
 from django.core.management.base import BaseCommand
 from measurements.models.unit import Unit
 from measurements.models.unitType import UnitType
