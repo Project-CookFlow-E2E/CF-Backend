@@ -29,8 +29,8 @@ jobs:
           context: .
           push: true
           tags: |
-            hemaps/CF-Backend:latest
-            hemaps/CF-Backend:${{ github.sha }}
+            hemaps/cf-backend:latest
+            hemaps/cf-backend:${{ github.sha }}
 
       - name: Trigger Frontend E2E Tests (Cross-Repo)
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
