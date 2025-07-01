@@ -1,8 +1,18 @@
 # # CF-backend/Dockerfile
 FROM python:3.13-slim
 WORKDIR /app
-RUN apt-get update && apt-get install -y curl --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+# Install essential tools and dependencies
+RUN apt-get update && \
+    apt-get install -y curl postgresql-client --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set Python to unbuffered mode
+ENV PYTHONUNBUFFERED=1
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# Use direct python execution with unbuffered flag
+CMD ["python", "-u", "manage.py", "runserver", "0.0.0.0:8000"]
