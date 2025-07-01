@@ -1,4 +1,4 @@
-# cf-backend/.github/workflows/ci.yml
+# CF-backend/.github/workflows/ci.yml
 name: Backend CI & E2E Trigger
 
 on:
@@ -38,5 +38,5 @@ jobs:
           curl -X POST \
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.REPO_DISPATCH_TOKEN }}" \
-          https://api.github.com/repos/${{ github.repository_owner }}/cf-frontend/dispatches \
+          https://api.github.com/repos/${{ github.repository_owner }}/CF-Frontend/dispatches \
           -d '{"event_type": "backend_update", "client_payload": {"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}}'

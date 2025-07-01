@@ -1,4 +1,4 @@
-# cf-backend/recipes/management/commands/ingredient_seeder.py
+# CF-backend/recipes/management/commands/ingredient_seeder.py
 from django.core.management.base import BaseCommand
 from recipes.models.ingredient import Ingredient
 from users.models.user import CustomUser

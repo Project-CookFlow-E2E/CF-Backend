@@ -1,4 +1,4 @@
-# cf-backend/recipes/management/commands/categories_seeder.py
+# CF-backend/recipes/management/commands/categories_seeder.py
 from django.core.management.base import BaseCommand
 from recipes.models.category import Category
 from users.models.user import CustomUser

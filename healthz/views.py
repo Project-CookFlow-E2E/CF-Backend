@@ -1,4 +1,4 @@
-# cf-backend/healthz/views.py
+# CF-Backend/healthz/views.py
 from django.http import JsonResponse
 
 def health_check(request):

@@ -1,4 +1,4 @@
-# cf-backend/management/commands/seed_all.py
+# CF-backend/management/commands/seed_all.py
 from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
 from django.apps import apps # To get models dynamically
