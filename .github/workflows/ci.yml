@@ -29,14 +29,14 @@ jobs:
           context: .
           push: true
           tags: |
-            hemaps/cookflow-backend:latest
-            hemaps/cookflow-backend:${{ github.sha }}
+            hemaps/CF-Backend:latest
+            hemaps/CF-Backend:${{ github.sha }}
 
       - name: Trigger Frontend E2E Tests (Cross-Repo)
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
         run: |
           curl -X POST \
           -H "Accept: application/vnd.github.v3+json" \
-          -H "Authorization: token ${{ secrets.REPO_DISPATCH_TOKEN }}"
-          https://api.github.com/repos/${{ github.repository_owner }}/cookflow-frontend/dispatches \
+          -H "Authorization: token ${{ secrets.REPO_DISPATCH_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository_owner }}/CF-Frontend/dispatches \
           -d '{"event_type": "backend_update", "client_payload": {"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}}'
