@@ -32,6 +32,9 @@ jobs:
             hemaps/cf-backend:${{ github.sha }}
 
       - name: Trigger Frontend E2E Tests (Cross-Repo)
+        # This step sends a repository_dispatch event to the cf-frontend repository.
+        # Removed -sf from curl to make it verbose in logs for debugging purposes.
+        # If this step fails or gives a 4xx error, check the REPO_DISPATCH_TOKEN permissions.
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
         run: |
           curl -X POST \
