@@ -29,7 +29,6 @@ INSTALLED_APPS = [
     'media',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
-    'healthz',
     'django_filters',
 ]
 

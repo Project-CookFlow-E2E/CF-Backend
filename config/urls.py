@@ -22,7 +22,6 @@ from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 urlpatterns = [
-    path('healthz/', health_check),
     path('admin/', admin.site.urls),
     path('api/recipes/', include('recipes.urls')),
     path('api/shopping/', include('shopping.urls')),
