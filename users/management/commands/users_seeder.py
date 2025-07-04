@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
         try:
             admin_user, created = CustomUser.objects.get_or_create(
-                id=2,
+                id=1,
                 defaults={
                     'username': 'admin',
                     'email': 'admin@example.com',
@@ -46,7 +46,7 @@ class Command(BaseCommand):
 
         try:
             cookflow_user, created = CustomUser.objects.get_or_create(
-                id=3,
+                id=2,
                 username='cookflow',
                 defaults={
                     'email': 'cookflow@example.com',
