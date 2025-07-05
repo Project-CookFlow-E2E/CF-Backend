@@ -32,7 +32,6 @@ jobs:
             hemaps/cf-backend:${{ github.sha }}
 
       - name: Trigger Frontend E2E Tests (Cross-Repo)
-        # This condition ensures the dispatch only happens on push to main/dev, not on pull request
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
         run: |
           curl -v -X POST \
